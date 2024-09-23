@@ -1,0 +1,39 @@
+﻿<!-- File: MainWindow.xaml -->
+<Window x:Class="Lab01_OR.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Simplex Method Solver" Height="450" Width="800">
+    <Grid>
+        <StackPanel Name="myPanel">
+            <TextBlock Text="The number of constraints:" />
+            <ComboBox SelectionChanged="ConstraintsComboBox_SelectionChanged">
+                <ComboBoxItem Content="2" />
+                <ComboBoxItem Content="3" IsSelected="True" />
+                <ComboBoxItem Content="4" />
+                <ComboBoxItem Content="5" />
+            </ComboBox>
+
+            <TextBlock Text="The number of variables:" />
+            <ComboBox SelectionChanged="VariablesComboBox_SelectionChanged">
+                <ComboBoxItem Content="2" />
+                <ComboBoxItem Content="3" IsSelected="True" />
+                <ComboBoxItem Content="4" />
+                <ComboBoxItem Content="5" />
+            </ComboBox>
+
+            <TextBlock Text="Enter the values of the objective function:" />
+            <Grid Name="ObjectiveFunctionGrid" HorizontalAlignment="Left" />
+
+            <TextBlock Text="Enter the values of the system of constraints:" />
+            <Grid Name="ConstraintsGrid" HorizontalAlignment="Left" />
+
+            <Button Content="Calculate" Click="CalculateButton_Click" />
+
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                <StackPanel Name="DynamicGridContainer" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Margin="30,30,30,30" Height="Auto">
+                    
+                </StackPanel>
+            </ScrollViewer>
+        </StackPanel>
+    </Grid>
+</Window>
