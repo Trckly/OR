@@ -5,6 +5,7 @@ using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Lab01_OR.Methods;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Lab01_OR
@@ -139,7 +140,7 @@ namespace Lab01_OR
             DynamicGridContainer.Children.Clear();
 
             // Call Simplex algorithm to solve
-            IMethod? method = null;
+            Method? method = null;
             var methodString = MethodBox.Text;
             if (methodString == "Simplex")
             {

@@ -1,6 +1,2 @@
-﻿namespace Lab01_OR;
+﻿namespace Lab01_OR.Methods;
 
-public interface IMethod
-{
-    public double[] Solve();
-}
