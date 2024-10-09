@@ -5,6 +5,7 @@ using System.Data;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Lab01_OR.Methods;
 using static System.Net.Mime.MediaTypeNames;
 
 namespace Lab01_OR
@@ -146,9 +147,9 @@ namespace Lab01_OR
             {
                 method = new Simplex(objectiveFunction, constraints, inequalities, results, this);
             }
-            else if (methodString == "DualSimplex")
+            else if (methodString == "BigM")
             {
-                method = new DualSimplex(objectiveFunction, constraints, inequalities, results, this);
+                method = new BigM(objectiveFunction, constraints, inequalities, results, this);
             }
 
             double[]? solution = method?.Solve();
@@ -362,7 +363,7 @@ namespace Lab01_OR
             double[] myResults = new[] { 1.0, 0, 0, 6 };
             string[] myInequalities = new[] { ">=", "<=", ">=", "<="};
             
-            MethodBox.SelectedValue = "DualSimplex";
+            MethodBox.SelectedValue = "BigM";
             NumberOfConstraints.SelectedValue = "4";
             NumberOfVariables.SelectedValue = "2";
 

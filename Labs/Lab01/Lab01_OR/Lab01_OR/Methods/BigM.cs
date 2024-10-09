@@ -1,6 +1,6 @@
-﻿namespace Lab01_OR;
+﻿namespace Lab01_OR.Methods;
 
-public class DualSimplex : IMethod
+public class BigM : IMethod
 {
     private double[] _objectiveFunction;
     private double[] _baseCoefficient;
@@ -14,7 +14,7 @@ public class DualSimplex : IMethod
     private int[] _base;
     MainWindow _mainWindow;
 
-    public DualSimplex(double[] objectiveFunction, double[,] constraints, string[] inequalities, double[] results,
+    public BigM(double[] objectiveFunction, double[,] constraints, string[] inequalities, double[] results,
         MainWindow mainWindow)
     {
         for (int i = 0; i < inequalities.Length; i++)
@@ -97,7 +97,7 @@ public class DualSimplex : IMethod
         FindDelta();
         if (CheckIfSolved())
         {
-            _mainWindow.CreateAndAddDynamicGridDualSimplex(_constraints, _cb, _plan, _deriv, _delta, _base);
+            _mainWindow.CreateAndAddDynamicGridSimplex(_constraints, _cb, _plan, _deriv, _delta, _base);
             
             double[] result = new double[_delta.Length + 1];
             for (int i = 0; i < _delta.Length; i++)
@@ -143,7 +143,7 @@ public class DualSimplex : IMethod
         
         
 
-        _mainWindow.CreateAndAddDynamicGridDualSimplex(_constraints, _cb, _plan, _deriv, _delta, _base);
+        _mainWindow.CreateAndAddDynamicGridSimplex(_constraints, _cb, _plan, _deriv, _delta, _base);
 
         RebuildTable(minIndexRow, maxIndexColumn);
 
