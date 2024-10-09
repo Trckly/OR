@@ -19,6 +19,7 @@ namespace Lab01_OR
         {
             InitializeComponent();
             SetupGrid();
+            PreDefine();
         }
 
         private void ConstraintsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -91,8 +92,9 @@ namespace Lab01_OR
                     Width = 50,
                     Margin = new Thickness(5)
                 };
-                inequalityComboBox.Items.Add("<=");
-                inequalityComboBox.Items.Add(">=");
+                inequalityComboBox.Items.Add(new ComboBoxItem{Content = "<="});
+                inequalityComboBox.Items.Add(new ComboBoxItem{Content = ">="});
+                inequalityComboBox.SelectedValuePath = "Content";
                 inequalityComboBox.SelectedIndex = 0;
                 ConstraintsGrid.Children.Add(inequalityComboBox);
                 Grid.SetRow(inequalityComboBox, i);
@@ -130,8 +132,7 @@ namespace Lab01_OR
                     constraints[i, j] = Convert.ToDouble(((TextBox)GetGridElement(ConstraintsGrid, i, j)).Text);
                 }
 
-                inequalities[i] = ((ComboBox)GetGridElement(ConstraintsGrid, i, numberOfVariables)).SelectedItem
-                    .ToString();
+                inequalities[i] = ((ComboBox)GetGridElement(ConstraintsGrid, i, numberOfVariables)).Text;
                 results[i] =
                     Convert.ToDouble(((TextBox)GetGridElement(ConstraintsGrid, i, numberOfVariables + 1)).Text);
             }
@@ -146,9 +147,9 @@ namespace Lab01_OR
             {
                 method = new Simplex(objectiveFunction, constraints, inequalities, results, this);
             }
-            else if (methodString == "DualSimplex")
+            else if (methodString == "BigM")
             {
-                method = new DualSimplex(objectiveFunction, constraints, inequalities, results, this);
+                method = new BigM(objectiveFunction, constraints, inequalities, results, this);
             }
 
             double[]? solution = method?.Solve();
@@ -347,6 +348,39 @@ namespace Lab01_OR
 
             Grid.SetRow(textBox, x);
             Grid.SetColumn(textBox, y);
+        }
+
+        private void PreDefine()
+        {
+            double[] myObjectiveFunction = new[] { 2.0, 1 };
+            double[,] myConstraints = new [,]
+            {
+                {4.0, 2},
+                {5, -1},
+                {-1, 5},
+                {1, 1}
+            };
+            double[] myResults = new[] { 1.0, 0, 0, 6 };
+            string[] myInequalities = new[] { ">=", "<=", ">=", "<="};
+            
+            MethodBox.SelectedValue = "BigM";
+            NumberOfConstraints.SelectedValue = "4";
+            NumberOfVariables.SelectedValue = "2";
+
+            for (int i = 0; i < numberOfVariables; i++)
+            {
+                ((TextBox)GetGridElement(ObjectiveFunctionGrid, 0, i)).Text = myObjectiveFunction[i].ToString();
+            }
+
+            for (int i = 0; i < numberOfConstraints; i++)
+            {
+                for (int j = 0; j < numberOfVariables; j++)
+                {
+                    ((TextBox)GetGridElement(ConstraintsGrid, i, j)).Text = myConstraints[i, j].ToString();
+                }
+                ((ComboBox)GetGridElement(ConstraintsGrid, i, numberOfVariables)).SelectedValue = myInequalities[i];
+                ((TextBox)GetGridElement(ConstraintsGrid, i, numberOfVariables + 1)).Text = myResults[i].ToString();
+            }
         }
     }
 
