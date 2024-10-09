@@ -20,7 +20,7 @@ public class Simplex : IMethod
         {
             if (inequalities[i] == ">=")
             {
-                for (int j = 0; j < constraints.GetLength(0); j++)
+                for (int j = 0; j < constraints.GetLength(1); j++)
                 {
                     constraints[i, j] = -constraints[i, j];
                 }

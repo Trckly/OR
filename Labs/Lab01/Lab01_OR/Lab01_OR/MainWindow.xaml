@@ -7,12 +7,12 @@
         <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto" >
             <StackPanel VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                         Margin="5,5,5,5" Height="Auto">
-                <ComboBox Name="MethodBox">
+                <ComboBox Name="MethodBox" SelectedValuePath="Content">
                     <ComboBoxItem Content="Simplex" IsSelected="True" />
                     <ComboBoxItem Content="DualSimplex" />
                 </ComboBox>
                 <TextBlock Text="The number of constraints:" />
-                <ComboBox SelectionChanged="ConstraintsComboBox_SelectionChanged">
+                <ComboBox Name="NumberOfConstraints" SelectedValuePath="Content" SelectionChanged="ConstraintsComboBox_SelectionChanged">
                     <ComboBoxItem Content="2" />
                     <ComboBoxItem Content="3" IsSelected="True" />
                     <ComboBoxItem Content="4" />
@@ -20,7 +20,7 @@
                 </ComboBox>
         
                 <TextBlock Text="The number of variables:" />
-                <ComboBox SelectionChanged="VariablesComboBox_SelectionChanged">
+                <ComboBox Name="NumberOfVariables" SelectedValuePath="Content" SelectionChanged="VariablesComboBox_SelectionChanged">
                     <ComboBoxItem Content="2" />
                     <ComboBoxItem Content="3" IsSelected="True" />
                     <ComboBoxItem Content="4" />

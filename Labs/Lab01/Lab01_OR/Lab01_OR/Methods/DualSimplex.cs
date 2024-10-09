@@ -20,7 +20,7 @@ public class DualSimplex : IMethod
         {
             if (inequalities[i] == ">=")
             {
-                for (int j = 0; j < constraints.GetLength(0); j++)
+                for (int j = 0; j < constraints.GetLength(1); j++)
                 {
                     constraints[i, j] = -constraints[i, j];
                 }
@@ -41,10 +41,10 @@ public class DualSimplex : IMethod
     public void Initialize(double[] objectiveFunction, double[,] constraints, string[] inequalities, double[] results)
     {
         
-        this._constraints = new double[constraints.GetLength(0), constraints.GetLength(0) + objectiveFunction.Length];
+        this._constraints = new double[constraints.GetLength(0), 2 * constraints.GetLength(0) + objectiveFunction.Length];
         for (int i = 0; i < constraints.GetLength(0); i++)
         {
-            for (int j = 0; j < constraints.GetLength(0); j++)
+            for (int j = 0; j < constraints.GetLength(1); j++)
             {
                 _constraints[i, j] = constraints[i, j];
             }
@@ -52,10 +52,11 @@ public class DualSimplex : IMethod
 
         for (int i = 0; i < constraints.GetLength(0); i++)
         {
-            _constraints[i, constraints.GetLength(0) + i] = 1;
+            _constraints[i, constraints.GetLength(1) + i] = -1;
+            _constraints[i, constraints.GetLength(1) + i + constraints.GetLength(0)] = 1;
         }
 
-        this._delta = new double[results.Length + objectiveFunction.Length];
+        this._delta = new double[2 * results.Length + objectiveFunction.Length];
         for (int i = 0; i < objectiveFunction.Length; i++)
         {
             _delta[i] = -objectiveFunction[i];
@@ -67,10 +68,10 @@ public class DualSimplex : IMethod
         this._inequalities = inequalities;
         this._plan = new Dictionary<int, double>();
         this._base = new int[results.Length];
-        for (int i = objectiveFunction.Length; i < _delta.Length; i++)
+        for (int i = _constraints.GetLength(1) - results.Length; i < _constraints.GetLength(1); i++)
         {
-            _plan.Add(i, results[i - objectiveFunction.Length]);
-            _base[i - objectiveFunction.Length] = i;
+            _plan.Add(i, results[i - (_constraints.GetLength(1) - results.Length)]);
+            _base[i - (_constraints.GetLength(1) - results.Length)] = i;
         }
         
     }
@@ -78,6 +79,7 @@ public class DualSimplex : IMethod
     // Check whether to use the primal or dual simplex method based on inequalities
     public double[] Solve()
     {
+        FindDelta();
         if (CheckIfSolved())
         {
             _mainWindow.CreateAndAddDynamicGridDualSimplex(_constraints, _cb, _plan, _deriv, _delta, _base);
@@ -96,37 +98,36 @@ public class DualSimplex : IMethod
             return result;
         }
 
-        double min = 0;
-        int minIndexRow = 0;
+        double max = 0;
+        int maxIndexRow = 0;
         for (int i = 0; i < _base.Length; i++)
         {
-            if (_plan.GetValueOrDefault(_base[i]) < min)
+            if (_plan.GetValueOrDefault(_base[i]) > max)
             {
-                min = _plan.GetValueOrDefault(_base[i]);
-                minIndexRow = i;
+                max = _plan.GetValueOrDefault(_base[i]);
+                maxIndexRow = i;
             }
         }
 
         for (int i = 0; i < _deriv.Length; i++)
         {
-            _deriv[i] = -_delta[i] / _constraints[minIndexRow, i];
+            _deriv[i] = _plan.GetValueOrDefault(_base[i]) / _constraints[i, maxIndexColumn];
         }
 
-        min = Double.MaxValue;
-        int minIndexColumn = 0;
+        max = 0;
+        int maxIndexColumn = 0;
         for (int i = 0; i < _deriv.Length; i++)
         {
-            if (_deriv[i] < min && _deriv[i] > 0)
+            if (_deriv[i] > max)
             {
-                min = _deriv[i];
-                minIndexColumn = i;
+                max = _deriv[i];
+                maxIndexColumn = i;
             }
         }
 
         _mainWindow.CreateAndAddDynamicGridDualSimplex(_constraints, _cb, _plan, _deriv, _delta, _base);
 
-        RebuildTable(minIndexRow, minIndexColumn);
-        FindDelta();
+        RebuildTable(maxIndexRow, maxIndexColumn);
 
         return Solve();
     }
@@ -140,14 +141,14 @@ public class DualSimplex : IMethod
         {
             for (int j = 0; j < _constraints.GetLength(1); j++)
             {
-                transposedConstraints[j, i] = -_constraints[i, j];
+                transposedConstraints[j, i] = _constraints[i, j];
             }
         }
 
         _constraints = transposedConstraints;
 
         // Swap the objective function with the results array
-        (_objectiveFunction, _results) = (_results.Select(x => -x).ToArray(), _objectiveFunction.Select(x => -x).ToArray());
+        (_objectiveFunction, _results) = (_results, _objectiveFunction);
 
     }
 
@@ -177,39 +178,39 @@ public class DualSimplex : IMethod
         _delta = newDelta;
     }
 
-    private void RebuildTable(int minIndexRow, int minIndexColumn)
+    private void RebuildTable(int maxIndexRow, int maxIndexColumn)
     {
-        double rate = _constraints[minIndexRow, minIndexColumn];
+        double rate = _constraints[maxIndexRow, maxIndexColumn];
 
-        if (minIndexColumn < _objectiveFunction.Length)
+        if (maxIndexColumn < _objectiveFunction.Length)
         {
-            _cb[minIndexRow] = _objectiveFunction[minIndexColumn];
+            _cb[maxIndexRow] = _objectiveFunction[maxIndexColumn];
         }
 
         Dictionary<int, double> newPlan = _plan.ToDictionary();
         double[,] newConstraints = new double[_constraints.GetLength(0), _constraints.GetLength(1)];
 
-        newPlan.Add(minIndexColumn, _plan[_base[minIndexRow]] / rate);
-        newPlan.Remove(_base[minIndexRow]);
+        newPlan.Add(maxIndexColumn, _plan[_base[maxIndexRow]] / rate);
+        newPlan.Remove(_base[maxIndexRow]);
 
         for (int i = 0; i < _delta.Length; i++)
         {
-            newConstraints[minIndexRow, i] = _constraints[minIndexRow, i] / rate;
+            newConstraints[maxIndexRow, i] = _constraints[maxIndexRow, i] / rate;
         }
 
         for (int i = 0; i < _base.Length; i++)
         {
-            if (i != minIndexRow)
+            if (i != maxIndexRow)
             {
                 newPlan[_base[i]] =
-                    _plan[_base[i]] - _constraints[i, minIndexColumn] * _plan[_base[minIndexRow]] / rate;
+                    _plan[_base[i]] - _constraints[i, maxIndexColumn] * _plan[_base[maxIndexRow]] / rate;
 
                 for (int j = 0; j < _delta.Length; j++)
                 {
-                    if (j != minIndexColumn)
+                    if (j != maxIndexColumn)
                     {
                         newConstraints[i, j] = _constraints[i, j] -
-                                               _constraints[minIndexRow, j] * _constraints[i, minIndexColumn] / rate;
+                                               _constraints[maxIndexRow, j] * _constraints[i, maxIndexColumn] / rate;
                     }
                     else
                     {
@@ -221,12 +222,12 @@ public class DualSimplex : IMethod
 
         _constraints = newConstraints;
         _plan = newPlan;
-        _base[minIndexRow] = minIndexColumn;
+        _base[maxIndexRow] = maxIndexColumn;
 
     }
 
     private bool CheckIfSolved()
     {
-        return !_plan.Values.Any(x => x < 0);
+        return !_deriv.Any(x => x > 0.000001);
     }
 }
