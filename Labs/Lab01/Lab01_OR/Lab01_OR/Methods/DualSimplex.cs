@@ -1,11 +1,25 @@
-﻿using Lab01_OR.Methods;
+﻿using System.Xml;
+using Lab01_OR.Methods;
 
 namespace Lab01_OR;
 
 public class DualSimplex : Method
 {
+    public DualSimplex(decimal[] objectiveFunction, decimal[] results, MainWindow mainWindow,
+        Table table)
+    {
+        _objectiveFunction = objectiveFunction;
+        _results = results;
+        _mainWindow = mainWindow;
+        _constraints = table.constraints;
+        _cb = table.cb;
+        _plan = table.plan;
+        _deriv = table.deriv;
+        _delta = table.delta;
+        _base = table.myBase;
+    }
 
-    public DualSimplex(double[] objectiveFunction, double[,] constraints, string[] inequalities, double[] results,
+    public DualSimplex(decimal[] objectiveFunction, decimal[,] constraints, string[] inequalities, decimal[] results,
         MainWindow mainWindow)
     {
         for (int i = 0; i < inequalities.Length; i++)
@@ -30,10 +44,10 @@ public class DualSimplex : Method
         ApplyDualSimplexTransform();
         Initialize(_objectiveFunction, _constraints, _inequalities, _results);
     }
-    public void Initialize(double[] objectiveFunction, double[,] constraints, string[] inequalities, double[] results)
+    public void Initialize(decimal[] objectiveFunction, decimal[,] constraints, string[] inequalities, decimal[] results)
     {
         
-        this._constraints = new double[constraints.GetLength(0), constraints.GetLength(0) + objectiveFunction.Length];
+        this._constraints = new decimal[constraints.GetLength(0), constraints.GetLength(0) + objectiveFunction.Length];
         for (int i = 0; i < constraints.GetLength(0); i++)
         {
             for (int j = 0; j < constraints.GetLength(0); j++)
@@ -47,17 +61,17 @@ public class DualSimplex : Method
             _constraints[i, constraints.GetLength(0) + i] = 1;
         }
 
-        this._delta = new double[results.Length + objectiveFunction.Length];
+        this._delta = new decimal[results.Length + objectiveFunction.Length];
         for (int i = 0; i < objectiveFunction.Length; i++)
         {
             _delta[i] = -objectiveFunction[i];
         }
 
-        _cb = new double[results.Length];
-        _deriv = new double[_delta.Length];
+        _cb = new decimal[results.Length];
+        _deriv = new decimal[_delta.Length];
 
         this._inequalities = inequalities;
-        this._plan = new Dictionary<int, double>();
+        this._plan = new Dictionary<int, decimal>();
         this._base = new int[results.Length];
         for (int i = objectiveFunction.Length; i < _delta.Length; i++)
         {
@@ -68,13 +82,13 @@ public class DualSimplex : Method
     }
 
     // Check whether to use the primal or dual simplex method based on inequalities
-    public override double[] Solve()
+    public override decimal[] Solve()
     {
         if (CheckIfSolved())
         {
             _mainWindow.CreateAndAddDynamicGridDualSimplex(_constraints, _cb, _plan, _deriv, _delta, _base);
             
-            double[] result = new double[_delta.Length + 1];
+            decimal[] result = new decimal[_delta.Length + 1];
             for (int i = 0; i < _delta.Length; i++)
             {
                 result[i] = _plan.GetValueOrDefault(i);
@@ -88,7 +102,7 @@ public class DualSimplex : Method
             return result;
         }
 
-        double min = 0;
+        decimal min = 0;
         int minIndexRow = 0;
         for (int i = 0; i < _base.Length; i++)
         {
@@ -101,10 +115,17 @@ public class DualSimplex : Method
 
         for (int i = 0; i < _deriv.Length; i++)
         {
-            _deriv[i] = -_delta[i] / _constraints[minIndexRow, i];
+            if (_constraints[minIndexRow, i] == 0)
+            {
+                _deriv[i] = 0;
+            }
+            else
+            {
+                _deriv[i] = -_delta[i] / _constraints[minIndexRow, i];
+            }
         }
 
-        min = Double.MaxValue;
+        min = decimal.MaxValue;
         int minIndexColumn = 0;
         for (int i = 0; i < _deriv.Length; i++)
         {
@@ -127,7 +148,7 @@ public class DualSimplex : Method
     private void ApplyDualSimplexTransform()
     {
         // Transpose the constraints array
-        double[,] transposedConstraints = new double[_constraints.GetLength(1), _constraints.GetLength(0)];
+        decimal[,] transposedConstraints = new decimal[_constraints.GetLength(1), _constraints.GetLength(0)];
         for (int i = 0; i < _constraints.GetLength(0); i++)
         {
             for (int j = 0; j < _constraints.GetLength(1); j++)
@@ -141,6 +162,11 @@ public class DualSimplex : Method
         // Swap the objective function with the results array
         (_objectiveFunction, _results) = (_results.Select(x => -x).ToArray(), _objectiveFunction.Select(x => -x).ToArray());
 
+    }
+
+    public Table GetTable()
+    {
+        return new Table(_constraints, _cb, _plan, _deriv, _delta, _base);
     }
 
     protected override bool CheckIfSolved()

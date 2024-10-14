@@ -9,7 +9,9 @@
                         Margin="5,5,5,5" Height="Auto">
                 <ComboBox Name="MethodBox" SelectedValuePath="Content">
                     <ComboBoxItem Content="Simplex" IsSelected="True" />
+                    <ComboBoxItem Content="DualSimplex" />
                     <ComboBoxItem Content="BigM" />
+                    <ComboBoxItem Content="CuttingPlane" />
                 </ComboBox>
                 <TextBlock Text="The number of constraints:" />
                 <ComboBox Name="NumberOfConstraints" SelectedValuePath="Content" SelectionChanged="ConstraintsComboBox_SelectionChanged">

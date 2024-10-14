@@ -115,26 +115,26 @@ namespace Lab01_OR
         private void CalculateButton_Click(object sender, RoutedEventArgs e)
         {
             // Collect input data and call Simplex method
-            double[] objectiveFunction = new double[numberOfVariables];
+            decimal[] objectiveFunction = new decimal[numberOfVariables];
             for (int i = 0; i < numberOfVariables; i++)
             {
-                objectiveFunction[i] = Convert.ToDouble(((TextBox)ObjectiveFunctionGrid.Children[i]).Text);
+                objectiveFunction[i] = Convert.ToDecimal(((TextBox)ObjectiveFunctionGrid.Children[i]).Text);
             }
 
-            double[,] constraints = new double[numberOfConstraints, numberOfVariables];
-            double[] results = new double[numberOfConstraints];
+            decimal[,] constraints = new decimal[numberOfConstraints, numberOfVariables];
+            decimal[] results = new decimal[numberOfConstraints];
             string[] inequalities = new string[numberOfConstraints];
 
             for (int i = 0; i < numberOfConstraints; i++)
             {
                 for (int j = 0; j < numberOfVariables; j++)
                 {
-                    constraints[i, j] = Convert.ToDouble(((TextBox)GetGridElement(ConstraintsGrid, i, j)).Text);
+                    constraints[i, j] = Convert.ToDecimal(((TextBox)GetGridElement(ConstraintsGrid, i, j)).Text);
                 }
 
                 inequalities[i] = ((ComboBox)GetGridElement(ConstraintsGrid, i, numberOfVariables)).Text;
                 results[i] =
-                    Convert.ToDouble(((TextBox)GetGridElement(ConstraintsGrid, i, numberOfVariables + 1)).Text);
+                    Convert.ToDecimal(((TextBox)GetGridElement(ConstraintsGrid, i, numberOfVariables + 1)).Text);
             }
 
             //Clear all tables
@@ -147,17 +147,25 @@ namespace Lab01_OR
             {
                 method = new Simplex(objectiveFunction, constraints, inequalities, results, this);
             }
+            else if (methodString == "DualSimplex")
+            {
+                method = new DualSimplex(objectiveFunction, constraints, inequalities, results, this);
+            }
             else if (methodString == "BigM")
             {
                 method = new BigM(objectiveFunction, constraints, inequalities, results, this);
             }
-
-            double[]? solution = method?.Solve();
-            double[] variables = new double[solution.Length - 1];
-
-            for (int i = 0; i < solution.Length - 1; i++)
+            else if (methodString == "CuttingPlane")
             {
-                if (solution != null) variables[i] = solution[i];
+                method = new CuttingPlane(objectiveFunction, constraints, inequalities, results, this);
+            }
+
+            decimal[]? solution = method?.Solve();
+            double[] variables = new double[numberOfVariables];
+
+            for (int i = 0; i < numberOfVariables; i++)
+            {
+                if (solution != null) variables[i] = Convert.ToDouble(solution[i]);
             }
 
             // Display the solution (can be improved to display more clearly)
@@ -176,7 +184,7 @@ namespace Lab01_OR
             }
             return null;
         }
-        public void CreateAndAddDynamicGridSimplex(double[,] constraints, double[] cb, Dictionary<int, double> plan, double[] deriv, double[] delta, int[] myBase)
+        public void CreateAndAddDynamicGridSimplex(decimal[,] constraints, decimal[] cb, Dictionary<int, decimal> plan, decimal[] deriv, decimal[] delta, int[] myBase)
         {
             // Create a new grid
             Grid dynamicGrid = new Grid
@@ -253,7 +261,7 @@ namespace Lab01_OR
             // Add the dynamic grid to the parent container (StackPanel)
             DynamicGridContainer.Children.Add(dynamicGrid);
         }
-        public void CreateAndAddDynamicGridDualSimplex(double[,] constraints, double[] cb, Dictionary<int, double> plan, double[] deriv, double[] delta, int[] myBase)
+        public void CreateAndAddDynamicGridDualSimplex(decimal[,] constraints, decimal[] cb, Dictionary<int, decimal> plan, decimal[] deriv, decimal[] delta, int[] myBase)
         {
             // Create a new grid
             Grid dynamicGrid = new Grid
@@ -352,19 +360,17 @@ namespace Lab01_OR
 
         private void PreDefine()
         {
-            double[] myObjectiveFunction = new[] { 2.0, 1 };
-            double[,] myConstraints = new [,]
+            decimal[] myObjectiveFunction = new[] { 8M, 6 };
+            decimal[,] myConstraints = new [,]
             {
-                {4.0, 2},
-                {5, -1},
-                {-1, 5},
-                {1, 1}
+                {2M, 5},
+                {4, 1},
             };
-            double[] myResults = new[] { 1.0, 0, 0, 6 };
-            string[] myInequalities = new[] { ">=", "<=", ">=", "<="};
+            decimal[] myResults = new[] { 19M, 16 };
+            string[] myInequalities = new[] { "<=", "<="};
             
-            MethodBox.SelectedValue = "BigM";
-            NumberOfConstraints.SelectedValue = "4";
+            MethodBox.SelectedValue = "CuttingPlane";
+            NumberOfConstraints.SelectedValue = "2";
             NumberOfVariables.SelectedValue = "2";
 
             for (int i = 0; i < numberOfVariables; i++)

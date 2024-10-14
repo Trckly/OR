@@ -2,14 +2,14 @@
 
 public struct Table
 {
-    public double[,] constraints;
-    public double[] cb;
-    public Dictionary<int, double> plan;
-    public double[] deriv;
-    public double[] delta;
+    public decimal[,] constraints;
+    public decimal[] cb;
+    public Dictionary<int, decimal> plan;
+    public decimal[] deriv;
+    public decimal[] delta;
     public int[] myBase;
 
-    public Table(double[,] constraints, double[] cb, Dictionary<int, double> plan, double[] deriv, double[] delta, int[] myBase)
+    public Table(decimal[,] constraints, decimal[] cb, Dictionary<int, decimal> plan, decimal[] deriv, decimal[] delta, int[] myBase)
     {
         this.constraints = constraints;
         this.cb = cb;
@@ -22,26 +22,26 @@ public struct Table
 public abstract class Method
 {
     
-    protected double[] _objectiveFunction;
-    protected double[,] _constraints;
+    protected decimal[] _objectiveFunction;
+    protected decimal[,] _constraints;
     protected string[] _inequalities;
-    protected double[] _delta;
-    protected double[] _cb;
-    protected Dictionary<int, double> _plan;
-    protected double[] _deriv;
-    protected double[] _results;
+    protected decimal[] _delta;
+    protected decimal[] _cb;
+    protected Dictionary<int, decimal> _plan;
+    protected decimal[] _deriv;
+    protected decimal[] _results;
     protected int[] _base;
     protected MainWindow _mainWindow;
     
-    public abstract double[] Solve();
+    public abstract decimal[] Solve();
     
     protected void FindDelta()
     {
-        double[] newDelta = new double[_delta.Length];
+        decimal[] newDelta = new decimal[_delta.Length];
 
         for (int i = 0; i < newDelta.Length; i++)
         {
-            double localDelta = 0;
+            decimal localDelta = 0;
             for (int j = 0; j < _base.Length; j++)
             {
                 localDelta += _cb[j] * _constraints[j, i];
@@ -62,15 +62,15 @@ public abstract class Method
 
     protected void RebuildTable(int minIndexRow, int minIndexColumn)
     {
-        double rate = _constraints[minIndexRow, minIndexColumn];
+        decimal rate = _constraints[minIndexRow, minIndexColumn];
 
         if (minIndexColumn < _objectiveFunction.Length)
         {
             _cb[minIndexRow] = _objectiveFunction[minIndexColumn];
         }
 
-        Dictionary<int, double> newPlan = _plan.ToDictionary();
-        double[,] newConstraints = new double[_constraints.GetLength(0), _constraints.GetLength(1)];
+        Dictionary<int, decimal> newPlan = _plan.ToDictionary();
+        decimal[,] newConstraints = new decimal[_constraints.GetLength(0), _constraints.GetLength(1)];
 
         newPlan.Add(minIndexColumn, _plan[_base[minIndexRow]] / rate);
         newPlan.Remove(_base[minIndexRow]);

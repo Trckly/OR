@@ -1,20 +1,10 @@
 ﻿namespace Lab01_OR.Methods;
 
-public class BigM : IMethod
+public class BigM : Method
 {
-    private double[] _objectiveFunction;
-    private double[] _baseCoefficient;
-    private double[,] _constraints;
-    private string[] _inequalities;
-    private double[] _delta;
-    private double[] _cb;
-    private double[] _deriv;
-    private Dictionary<int, double> _plan;
-    private double[] _results;
-    private int[] _base;
-    MainWindow _mainWindow;
+    private decimal[] _baseCoefficient;
 
-    public BigM(double[] objectiveFunction, double[,] constraints, string[] inequalities, double[] results,
+    public BigM(decimal[] objectiveFunction, decimal[,] constraints, string[] inequalities, decimal[] results,
         MainWindow mainWindow)
     {
         for (int i = 0; i < inequalities.Length; i++)
@@ -39,10 +29,10 @@ public class BigM : IMethod
         ApplyDualSimplexTransform();
         Initialize(_objectiveFunction, _constraints, _inequalities, _results);
     }
-    public void Initialize(double[] objectiveFunction, double[,] constraints, string[] inequalities, double[] results)
+    public void Initialize(decimal[] objectiveFunction, decimal[,] constraints, string[] inequalities, decimal[] results)
     {
         
-        this._constraints = new double[constraints.GetLength(0), 2 * constraints.GetLength(0) + objectiveFunction.Length];
+        this._constraints = new decimal[constraints.GetLength(0), 2 * constraints.GetLength(0) + objectiveFunction.Length];
         for (int i = 0; i < constraints.GetLength(0); i++)
         {
             for (int j = 0; j < constraints.GetLength(1); j++)
@@ -56,7 +46,7 @@ public class BigM : IMethod
             _constraints[i, constraints.GetLength(1) + i] = -1;
             _constraints[i, constraints.GetLength(1) + i + constraints.GetLength(0)] = 1;
         }
-        _baseCoefficient = new double[2 * constraints.GetLength(0) + objectiveFunction.Length];
+        _baseCoefficient = new decimal[2 * constraints.GetLength(0) + objectiveFunction.Length];
         for (int i = 0; i < objectiveFunction.Length; i++)
         {
             _baseCoefficient[i] = objectiveFunction[i];
@@ -67,21 +57,21 @@ public class BigM : IMethod
             _baseCoefficient[i] = 1000000000;
         }
 
-        this._delta = new double[2 * results.Length + objectiveFunction.Length];
+        this._delta = new decimal[2 * results.Length + objectiveFunction.Length];
         for (int i = 0; i < objectiveFunction.Length; i++)
         {
             _delta[i] = -objectiveFunction[i];
         }
 
-        _cb = new double[results.Length];
+        _cb = new decimal[results.Length];
         for (int i = 0; i < _cb.Length; i++)
         {
             _cb[i] = 1000000000;
         }
-        _deriv = new double[_constraints.GetLength(0)];
+        _deriv = new decimal[_constraints.GetLength(0)];
 
         this._inequalities = inequalities;
-        this._plan = new Dictionary<int, double>();
+        this._plan = new Dictionary<int, decimal>();
         this._base = new int[results.Length];
         for (int i = _constraints.GetLength(1) - results.Length; i < _constraints.GetLength(1); i++)
         {
@@ -92,14 +82,14 @@ public class BigM : IMethod
     }
 
     // Check whether to use the primal or dual simplex method based on inequalities
-    public double[] Solve()
+    public override decimal[] Solve()
     {
         FindDelta();
         if (CheckIfSolved())
         {
             _mainWindow.CreateAndAddDynamicGridSimplex(_constraints, _cb, _plan, _deriv, _delta, _base);
             
-            double[] result = new double[_delta.Length + 1];
+            decimal[] result = new decimal[_delta.Length + 1];
             for (int i = 0; i < _delta.Length; i++)
             {
                 result[i] = _plan.GetValueOrDefault(i);
@@ -113,7 +103,7 @@ public class BigM : IMethod
             return result;
         }
 
-        double max = 0;
+        decimal max = 0;
         int maxIndexColumn = 0;
         for (int i = 0; i < _delta.Length; i++)
         {
@@ -130,7 +120,7 @@ public class BigM : IMethod
         }
         
 
-        var min = Double.MaxValue;
+        var min = decimal.MaxValue;
         int minIndexRow = 0;
         for (int i = 0; i < _deriv.Length; i++)
         {
@@ -154,7 +144,7 @@ public class BigM : IMethod
     private void ApplyDualSimplexTransform()
     {
         // Transpose the constraints array
-        double[,] transposedConstraints = new double[_constraints.GetLength(1), _constraints.GetLength(0)];
+        decimal[,] transposedConstraints = new decimal[_constraints.GetLength(1), _constraints.GetLength(0)];
         for (int i = 0; i < _constraints.GetLength(0); i++)
         {
             for (int j = 0; j < _constraints.GetLength(1); j++)
@@ -171,13 +161,13 @@ public class BigM : IMethod
     }
 
 
-    private void FindDelta()
+    private new void FindDelta()
     {
-        double[] newDelta = new double[_delta.Length];
+        decimal[] newDelta = new decimal[_delta.Length];
 
         for (int i = 0; i < newDelta.Length; i++)
         {
-            double localDelta = 0;
+            decimal localDelta = 0;
             for (int j = 0; j < _base.Length; j++)
             {
                 localDelta += _cb[j] * _constraints[j, i];
@@ -189,14 +179,14 @@ public class BigM : IMethod
         _delta = newDelta;
     }
 
-    private void RebuildTable(int minIndexRow, int maxIndexColumn)
+    private new void RebuildTable(int minIndexRow, int maxIndexColumn)
     {
-        double rate = _constraints[minIndexRow, maxIndexColumn];
+        decimal rate = _constraints[minIndexRow, maxIndexColumn];
 
             _cb[minIndexRow] = _baseCoefficient[maxIndexColumn];
 
-        Dictionary<int, double> newPlan = _plan.ToDictionary();
-        double[,] newConstraints = new double[_constraints.GetLength(0), _constraints.GetLength(1)];
+        Dictionary<int, decimal> newPlan = _plan.ToDictionary();
+        decimal[,] newConstraints = new decimal[_constraints.GetLength(0), _constraints.GetLength(1)];
 
         newPlan.Add(maxIndexColumn, _plan[_base[minIndexRow]] / rate);
         newPlan.Remove(_base[minIndexRow]);
@@ -234,8 +224,8 @@ public class BigM : IMethod
 
     }
 
-    private bool CheckIfSolved()
+    protected override bool CheckIfSolved()
     {
-        return !_delta.Any(x => x > 0.000001);
+        return !_delta.Any(x => x > 0.000001M);
     }
 }

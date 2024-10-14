@@ -5,7 +5,7 @@ namespace Lab01_OR;
 public class Simplex : Method
 {
 
-    public Simplex(double[] objectiveFunction, double[,] constraints, string[] inequalities, double[] results,
+    public Simplex(decimal[] objectiveFunction, decimal[,] constraints, string[] inequalities, decimal[] results,
         MainWindow mainWindow)
     {
         for (int i = 0; i < inequalities.Length; i++)
@@ -26,7 +26,7 @@ public class Simplex : Method
         _inequalities = inequalities;
         _results = results;
         
-        this._constraints = new double[constraints.GetLength(0), constraints.GetLength(0) + objectiveFunction.Length];
+        this._constraints = new decimal[constraints.GetLength(0), constraints.GetLength(0) + objectiveFunction.Length];
         for (int i = 0; i < constraints.GetLength(0); i++)
         {
             for (int j = 0; j < constraints.GetLength(0); j++)
@@ -40,16 +40,16 @@ public class Simplex : Method
             _constraints[i, constraints.GetLength(0) + i] = 1;
         }
 
-        this._delta = new double[results.Length + objectiveFunction.Length];
+        this._delta = new decimal[results.Length + objectiveFunction.Length];
         for (int i = 0; i < objectiveFunction.Length; i++)
         {
             _delta[i] = -objectiveFunction[i];
         }
 
-        _deriv = new double[results.Length];
-        _cb = new double[results.Length];
+        _deriv = new decimal[results.Length];
+        _cb = new decimal[results.Length];
 
-        this._plan = new Dictionary<int, double>();
+        this._plan = new Dictionary<int, decimal>();
         this._base = new int[results.Length];
         for (int i = objectiveFunction.Length; i < _delta.Length; i++)
         {
@@ -59,12 +59,12 @@ public class Simplex : Method
         
     }
 
-    public override double[] Solve()
+    public override decimal[] Solve()
     {
         if (CheckIfSolved())
         {
             _mainWindow.CreateAndAddDynamicGridSimplex(_constraints, _cb, _plan, _deriv, _delta, _base);
-            double[] result = new double[_objectiveFunction.Length + 1];
+            decimal[] result = new decimal[_objectiveFunction.Length + 1];
             for (int i = 0; i < result.Length; i++)
             {
                 result[i] = _plan.GetValueOrDefault(i);
@@ -78,7 +78,7 @@ public class Simplex : Method
             return result;
         }
 
-        double min = 0;
+        decimal min = 0;
         int minIndexColumn = 0;
         for (int i = 0; i < _delta.Length; i++)
         {
@@ -94,7 +94,7 @@ public class Simplex : Method
             _deriv[i] = _plan.GetValueOrDefault(_base[i]) / _constraints[i, minIndexColumn];
         }
 
-        min = Double.MaxValue;
+        min = decimal.MaxValue;
         int minIndexRow = 0;
         for (int i = 0; i < _deriv.Length; i++)
         {
