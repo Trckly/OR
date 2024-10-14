@@ -225,7 +225,7 @@ namespace Lab01_OR
 
             for(int i = 1; i < myBase.Length + 1; i++)
             {
-                CreateCell(dynamicGrid, i, 0, string.Format("x" + myBase[i - 1]));
+                CreateCell(dynamicGrid, i, 0, string.Format("x" + (myBase[i - 1] + 1)));
             }
 
             for(int i = 1; i < myBase.Length + 1; i++)
@@ -302,7 +302,7 @@ namespace Lab01_OR
 
             for(int i = 1; i < myBase.Length + 1; i++)
             {
-                CreateCell(dynamicGrid, i, 0, string.Format("x" + myBase[i - 1]));
+                CreateCell(dynamicGrid, i, 0, string.Format("x" + (myBase[i - 1] + 1)));
             }
 
             for(int i = 1; i < myBase.Length + 1; i++)
@@ -360,13 +360,13 @@ namespace Lab01_OR
 
         private void PreDefine()
         {
-            decimal[] myObjectiveFunction = new[] { 8M, 6 };
+            decimal[] myObjectiveFunction = new[] { 1M, 1 };
             decimal[,] myConstraints = new [,]
             {
-                {2M, 5},
-                {4, 1},
+                {2M, 1},
+                {1, 2},
             };
-            decimal[] myResults = new[] { 19M, 16 };
+            decimal[] myResults = new[] { 5M, 5 };
             string[] myInequalities = new[] { "<=", "<="};
             
             MethodBox.SelectedValue = "CuttingPlane";
