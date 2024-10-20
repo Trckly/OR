@@ -31,7 +31,6 @@ namespace Lab04_OR.Methods
             var leastCostSolver = new LeastCostCellMethod(_costMatrix, _supplies, _demands);
             leastCostSolver.Solve();
             _allocation = leastCostSolver.GetAllocationMatrix();
-            
             for (int i = 0; i < _allocation.GetLength(0); i++)
             {
                 for (int j = 0; j < _allocation.GetLength(1); j++)
@@ -46,7 +45,8 @@ namespace Lab04_OR.Methods
                 BalanceSystem();
             }
 
-            //CheckAndResolveDegeneracy();
+            CheckAndResolveDegeneracy();
+            //_allocation[2, 3] = 0;
 
             bool optimalSolutionFound = false;
 
@@ -56,7 +56,7 @@ namespace Lab04_OR.Methods
 
                 var (row, col, maxOpCost) = FindEnteringVariable();
 
-                if (maxOpCost <= 0)
+                if (maxOpCost >= 0)
                 {
                     optimalSolutionFound = true;
                 }
@@ -71,62 +71,37 @@ namespace Lab04_OR.Methods
 
         private void CalculateUV()
         {
-            // _u[0] = 0;
-            //
-            // for (int i = 0; i < _u.Length; i++)
-            // {
-            //     for (int j = 0; j < _v.Length; j++)
-            //     {
-            //         if (_allocation[i, j] != EMPTY_CELL && _allocation[i, j] > 0)
-            //         {
-            //             if (_u[i] != int.MaxValue)
-            //             {
-            //                 _v[j] = _costMatrix[i, j] - _u[i];
-            //             }
-            //             else
-            //             {
-            //                 _u[i] = _costMatrix[i, j] - _v[j];
-            //             }
-            //         }
-            //     }
-            // }
+            _u[0] = 0;
+            bool[] _uIsSet = new[] { true, false, false, false };
+            bool[] _vIsSet = new[] { false, false, false, false, false };
 
-            // int maxRowIndex = -1;
-            // int maxRowValue = 0;
-            // for (int i = 0; i < _allocation.GetLength(0); i++)
-            // {
-            //     int rowValue = 0;
-            //     for (int j = 0; j < _allocation.GetLength(1); j++)
-            //     {
-            //         if (_allocation[i, j] != EMPTY_CELL)
-            //         {
-            //             rowValue++;
-            //         }
-            //     }
-            //
-            //     if (rowValue > maxRowValue)
-            //     {
-            //         maxRowValue = rowValue;
-            //         maxRowIndex = i;
-            //     }
-            // }
-            //
-            // if (maxRowIndex == -1)
-            // {
-            //     throw new Exception("_allocation is empty.");
-            // }
-            //
-            // _u[maxRowIndex] = 0;
-
-            _allocation[2, 3] = 0;
-            _u = new[] { -12, -1, -11, 0 };
-            _v = new[] { 3, 8, 12, 13, 13};
-
+            while(!(_uIsSet.All(x => x) && _vIsSet.All(x => x)))
+            {
+                for (int i = 0; i < _u.Length; i++)
+                {
+                    for (int j = 0; j < _v.Length; j++)
+                    {
+                        if (_allocation[i, j] != EMPTY_CELL)
+                        {
+                            if (_uIsSet[i])
+                            {
+                                _v[j] = _costMatrix[i, j] - _u[i];
+                                _vIsSet[j] = true;
+                            }
+                            else if (_vIsSet[j])
+                            {
+                                _u[i] = _costMatrix[i, j] - _v[j];
+                                _uIsSet[i] = true;
+                            }
+                        }
+                    }
+                }
+            }
         }
 
         private (int, int, int) FindEnteringVariable()
         {
-            int maxOpCost = int.MinValue;
+            int minOpCost = 0;
             int enteringRow = -1, enteringCol = -1;
 
             for (int i = 0; i < _u.Length; i++)
@@ -135,10 +110,10 @@ namespace Lab04_OR.Methods
                 {
                     if (_allocation[i, j] == EMPTY_CELL) // Non-basic variable
                     {
-                        int opCost = (_u[i] + _v[j]) - _costMatrix[i, j];
-                        if (opCost > maxOpCost)
+                        int opCost = _costMatrix[i, j] - (_u[i] + _v[j]);
+                        if (opCost < minOpCost)
                         {
-                            maxOpCost = opCost;
+                            minOpCost = opCost;
                             enteringRow = i;
                             enteringCol = j;
                         }
@@ -146,7 +121,7 @@ namespace Lab04_OR.Methods
                 }
             }
 
-            return (enteringRow, enteringCol, maxOpCost);
+            return (enteringRow, enteringCol, minOpCost);
         }
 
         private void PerformPivot(int row, int col)
@@ -187,8 +162,9 @@ namespace Lab04_OR.Methods
                     }
                 }
             }
-        } // Find the loop formed by the new entering cell at (row, col)
+        }
 
+        // Find the loop formed by the new entering cell at (row, col)
         private List<(int, int)> FindLoop(int row, int col)
         {
             // We'll find the loop by tracing through the rows and columns, connecting allocated cells.
@@ -196,6 +172,7 @@ namespace Lab04_OR.Methods
 
             // Add the starting cell (the entering variable)
             loop.Add((row, col));
+            _allocation[row, col] = 0;
 
             // We now need to find a path that alternates between rows and columns
             // and returns to the starting point.
@@ -216,7 +193,8 @@ namespace Lab04_OR.Methods
         private bool TraceLoop(List<(int, int)> loop, int currentRow, int currentCol, bool isRow)
         {
             // Base case: If loop has returned to the starting point and has more than 3 elements, it's complete
-            if (loop.Count > 3 && loop[0] == (currentRow, currentCol))
+            (int row, int col) = loop[0];
+            if (loop.Count > 3 && (row == currentRow || col == currentCol))
             {
                 return true; // Loop completed
             }
@@ -227,7 +205,7 @@ namespace Lab04_OR.Methods
                 for (int j = 0; j < _allocation.GetLength(1); j++)
                 {
                     // Ignore empty cells marked with -1 and skip the current column
-                    if (j != currentCol && _allocation[currentRow, j] > EMPTY_CELL)
+                    if (j != currentCol && _allocation[currentRow, j] != EMPTY_CELL)
                     {
                         // Add the next step in the loop
                         loop.Add((currentRow, j));
@@ -249,7 +227,7 @@ namespace Lab04_OR.Methods
                 for (int i = 0; i < _allocation.GetLength(0); i++)
                 {
                     // Ignore empty cells marked with -1 and skip the current row
-                    if (i != currentRow && _allocation[i, currentCol] > EMPTY_CELL)
+                    if (i != currentRow && _allocation[i, currentCol] != EMPTY_CELL)
                     {
                         // Add the next step in the loop
                         loop.Add((i, currentCol));
@@ -300,38 +278,22 @@ namespace Lab04_OR.Methods
             int m = _allocation.GetLength(0);
             int n = _allocation.GetLength(1);
 
-            Dictionary<int, List<int>> keyCells = new Dictionary<int, List<int>>();
-            for (int i = 0; i < n; i++)
+            for (int i = 0; i < m; i++)
             {
-                keyCells.Add(i, new List<int>());
-                for (int j = 0; j < m; j++)
+                for (int j = 0; j < n; j++)
                 {
-                    if (_allocation[j, i] != EMPTY_CELL)
+                    if (_allocation[i, j] == EMPTY_CELL && !IsForbidden(i, j))
                     {
-                        keyCells[i].Add(j);
+                        _allocation[i, j] = 0; // Add dummy allocation
+
+                        currentAllocations++;
+
+                        if (currentAllocations == requiredAllocations)
+                        {
+                            return;
+                        }
                     }
                 }
-            }
-
-            var fulfilledRows = keyCells
-                .Where(x => x.Value.Count >= 2)
-                .SelectMany(x => x.Value)
-                .Distinct()
-                .ToList();
-
-            var lonelyCells = keyCells
-                .Where(x => x.Value.Count < 2 && !fulfilledRows
-                    .Contains(x.Value.FirstOrDefault()))
-                .Select(x => x.Key)
-                .ToList();
-
-
-            foreach (var lonelyCell in lonelyCells)
-            {
-                _allocation[fulfilledRows.FirstOrDefault(), lonelyCell] = 0;
-                currentAllocations++;
-                if (currentAllocations == requiredAllocations)
-                    break;
             }
         }
 
