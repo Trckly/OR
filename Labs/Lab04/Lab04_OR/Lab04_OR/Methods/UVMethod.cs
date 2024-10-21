@@ -45,8 +45,8 @@ namespace Lab04_OR.Methods
                 BalanceSystem();
             }
 
-            CheckAndResolveDegeneracy();
-            //_allocation[2, 3] = 0;
+            //CheckAndResolveDegeneracy();
+            _allocation[2, 3] = 0;
 
             bool optimalSolutionFound = false;
 
@@ -71,9 +71,30 @@ namespace Lab04_OR.Methods
 
         private void CalculateUV()
         {
-            _u[0] = 0;
-            bool[] _uIsSet = new[] { true, false, false, false };
-            bool[] _vIsSet = new[] { false, false, false, false, false };
+            _u = new int[_allocation.GetLength(0)];
+            _v = new int[_allocation.GetLength(1)];
+            bool[] _uIsSet = new bool [_u.Length];
+            bool[] _vIsSet = new bool [_v.Length];
+
+            int maxValues = 0;
+            int rowWithMaxValues = 0;
+            for (int i = 0; i < _allocation.GetLength(0); i++)
+            {
+                int numOfValuesInRow = 0;
+                for (int j = 0; j < _allocation.GetLength(1); j++)
+                {
+                    numOfValuesInRow += _allocation[i, j] != EMPTY_CELL ? 1 : 0;
+                }
+
+                if (numOfValuesInRow >= maxValues)
+                {
+                    maxValues = numOfValuesInRow;
+                    rowWithMaxValues = i;
+                }
+            }
+
+            _u[rowWithMaxValues] = 0;
+            _uIsSet[rowWithMaxValues] = true;
 
             while(!(_uIsSet.All(x => x) && _vIsSet.All(x => x)))
             {
@@ -83,12 +104,12 @@ namespace Lab04_OR.Methods
                     {
                         if (_allocation[i, j] != EMPTY_CELL)
                         {
-                            if (_uIsSet[i])
+                            if (_uIsSet[i] && !_vIsSet[j])
                             {
                                 _v[j] = _costMatrix[i, j] - _u[i];
                                 _vIsSet[j] = true;
                             }
-                            else if (_vIsSet[j])
+                            else if (_vIsSet[j] && !_uIsSet[i])
                             {
                                 _u[i] = _costMatrix[i, j] - _v[j];
                                 _uIsSet[i] = true;
@@ -148,6 +169,13 @@ namespace Lab04_OR.Methods
             {
                 (int r, int c) = loop[i];
 
+
+                if (_allocation[r, c] == 0 && !(r == row && c == col) && minAllocation == 0)
+                {
+                    _allocation[r, c] = EMPTY_CELL; // Reset to empty
+                    continue;
+                }
+                
                 if (i % 2 == 0)
                 {
                     _allocation[r, c] += minAllocation;
@@ -155,11 +183,6 @@ namespace Lab04_OR.Methods
                 else
                 {
                     _allocation[r, c] -= minAllocation;
-
-                    if (_allocation[r, c] == 0)
-                    {
-                        _allocation[r, c] = EMPTY_CELL; // Reset to empty
-                    }
                 }
             }
         }

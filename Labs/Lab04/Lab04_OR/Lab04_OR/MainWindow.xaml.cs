@@ -224,13 +224,13 @@ public partial class MainWindow : Window
     {
         int[,] costs = new [,]
         {
-            {3, 7, 1, 5, 4},
-            {7, 5, 8, 6, 3},
-            {6, 4, 8, 3, 2},
-            {3, 1, 7, 4, 2}
+            {10, 7, 4, 1, 4},
+            {2, 7, 10, 6, 11},
+            {8, 5, 3, 2, 2},
+            {11, 8, 12, 16, 13},
         };
-        int[] demands = new[] { 10, 35, 15, 25, 35 };
-        int[] suppliers = new[] { 30, 5, 45, 40 };
+        int[] demands = new[] { 200, 200, 100, 100, 250 };
+        int[] suppliers = new[] { 100, 250, 200, 300 };
             
         SupplierComboBox.SelectedValue = "4";
         ConsumerComboBox.SelectedValue = "5";
