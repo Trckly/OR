@@ -181,7 +181,7 @@ public partial class MainWindow : Window
     private void SolveButton_OnClick(object sender, RoutedEventArgs e)
     {
         // Read cost matrix from the grid
-        int[,] costMatrix = new int[_numSuppliers, _numDemands];
+        decimal[,] costMatrix = new decimal[_numSuppliers, _numDemands];
         for (int i = 1; i <= _numSuppliers; i++)
         {
             for (int j = 1; j <= _numDemands; j++)
@@ -189,7 +189,7 @@ public partial class MainWindow : Window
                 TextBox cell = (TextBox)TransportGrid.Children
                     .Cast<UIElement>()
                     .FirstOrDefault(e => Grid.GetRow(e) == i && Grid.GetColumn(e) == j);
-                costMatrix[i - 1, j - 1] = int.Parse(cell.Text);
+                costMatrix[i - 1, j - 1] = decimal.Parse(cell.Text);
             }
         }
 
@@ -214,7 +214,7 @@ public partial class MainWindow : Window
 
         // Solve using UV method
         var uvMethod = new UVMethod(costMatrix, supplies, demands);
-        int result = uvMethod.Solve();
+        decimal result = uvMethod.Solve();
 
         // Display result (total cost)
         MessageBox.Show($"Total Transportation Cost: {result}", "Result");
@@ -222,9 +222,9 @@ public partial class MainWindow : Window
 
     private void PreDefine()
     {
-        int[,] costs = new [,]
+        decimal[,] costs = new [,]
         {
-            {10, 7, 4, 1, 4},
+            {10M, 7, 4, 1, 4},
             {2, 7, 10, 6, 11},
             {8, 5, 3, 2, 2},
             {11, 8, 12, 16, 13},
@@ -234,6 +234,35 @@ public partial class MainWindow : Window
             
         SupplierComboBox.SelectedValue = "4";
         ConsumerComboBox.SelectedValue = "5";
+        
+        
+        // decimal[,] costs = new [,]
+        // {
+        //     {3M, 7, 1, 5, 4},
+        //     {7, 5, 8, 6, 3},
+        //     {6, 4, 8, 3, 2},
+        //     {3, 1, 7, 4, 2},
+        // };
+        // int[] demands = new[] { 10, 35, 15, 25, 35 };
+        // int[] suppliers = new[] { 30, 5, 45, 40 };
+        //     
+        // SupplierComboBox.SelectedValue = "4";
+        // ConsumerComboBox.SelectedValue = "5";
+        
+        
+        // decimal[,] costs = new [,]
+        // {
+        //     {4.2M, 10, 5, 9},
+        //     {5, 8, 5, 9},
+        //     {6, 4, 4, 7.3M},
+        //     {7, 5, 11, 4},
+        //     {3, 11, 8, 5}
+        // };
+        // int[] demands = new[] { 35, 22, 30, 15};
+        // int[] suppliers = new[] { 17, 33, 20, 12, 20 };
+        //     
+        // SupplierComboBox.SelectedValue = "5";
+        // ConsumerComboBox.SelectedValue = "4";
 
         for (int i = 1; i <= _numSuppliers; i++)
         {

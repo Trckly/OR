@@ -3,30 +3,30 @@ namespace Lab04_OR.Methods
 {
     public class UVMethod
     {
-        private int[,] _costMatrix;
+        private decimal[,] _costMatrix;
         private int[,] _allocation;
         private int[] _supplies;
         private int[] _demands;
-        private int[] _u;
-        private int[] _v;
+        private decimal[] _u;
+        private decimal[] _v;
 
         private const int EMPTY_CELL = -1; // Sentinel value for empty cells
 
-        public UVMethod(int[,] costMatrix, int[] supplies, int[] demands)
+        public UVMethod(decimal[,] costMatrix, int[] supplies, int[] demands)
         {
             _costMatrix = costMatrix;
             _supplies = supplies;
             _demands = demands;
 
-            _u = new int[supplies.Length];
-            _v = new int[demands.Length];
+            _u = new decimal[supplies.Length];
+            _v = new decimal[demands.Length];
 
             // Initialize the allocation matrix with the EMPTY_CELL value
             _allocation = new int[supplies.Length, demands.Length];
         }
 
         // Solve using UV Method
-        public int Solve()
+        public decimal Solve()
         {
             var leastCostSolver = new LeastCostCellMethod(_costMatrix, _supplies, _demands);
             leastCostSolver.Solve();
@@ -71,8 +71,8 @@ namespace Lab04_OR.Methods
 
         private void CalculateUV()
         {
-            _u = new int[_allocation.GetLength(0)];
-            _v = new int[_allocation.GetLength(1)];
+            _u = new decimal[_allocation.GetLength(0)];
+            _v = new decimal[_allocation.GetLength(1)];
             bool[] _uIsSet = new bool [_u.Length];
             bool[] _vIsSet = new bool [_v.Length];
 
@@ -120,9 +120,9 @@ namespace Lab04_OR.Methods
             }
         }
 
-        private (int, int, int) FindEnteringVariable()
+        private (int, int, decimal) FindEnteringVariable()
         {
-            int minOpCost = 0;
+            decimal minOpCost = 0;
             int enteringRow = -1, enteringCol = -1;
 
             for (int i = 0; i < _u.Length; i++)
@@ -131,7 +131,7 @@ namespace Lab04_OR.Methods
                 {
                     if (_allocation[i, j] == EMPTY_CELL) // Non-basic variable
                     {
-                        int opCost = _costMatrix[i, j] - (_u[i] + _v[j]);
+                        decimal opCost = _costMatrix[i, j] - (_u[i] + _v[j]);
                         if (opCost < minOpCost)
                         {
                             minOpCost = opCost;
@@ -325,9 +325,9 @@ namespace Lab04_OR.Methods
             return false;
         }
 
-        private int CalculateTotalCost()
+        private decimal CalculateTotalCost()
         {
-            int totalCost = 0;
+            decimal totalCost = 0;
 
             for (int i = 0; i < _u.Length; i++)
             {
@@ -360,7 +360,7 @@ namespace Lab04_OR.Methods
                 newDemands[^1] = supplySum - demandSum;
                 _demands = newDemands;
 
-                int[,] newCostMatrix = new int[_supplies.Length, _demands.Length];
+                decimal[,] newCostMatrix = new decimal[_supplies.Length, _demands.Length];
                 Array.Copy(_costMatrix, newCostMatrix, _costMatrix.Length);
                 _costMatrix = newCostMatrix;
             }
@@ -371,7 +371,7 @@ namespace Lab04_OR.Methods
                 newSupplies[^1] = demandSum - supplySum;
                 _supplies = newSupplies;
 
-                int[,] newCostMatrix = new int[_supplies.Length, _demands.Length];
+                decimal[,] newCostMatrix = new decimal[_supplies.Length, _demands.Length];
                 Array.Copy(_costMatrix, newCostMatrix, _costMatrix.Length);
                 _costMatrix = newCostMatrix;
             }

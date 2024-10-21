@@ -6,12 +6,12 @@ namespace Lab04_OR.Methods
 {
     public class LeastCostCellMethod
     {
-        private readonly int[,] _costMatrix;
+        private readonly decimal[,] _costMatrix;
         private readonly int[,] _allocation;
         private readonly int[] _supplies;
         private readonly int[] _demands;
 
-        public LeastCostCellMethod(int[,] costMatrix, int[] supplies, int[] demands)
+        public LeastCostCellMethod(decimal[,] costMatrix, int[] supplies, int[] demands)
         {
             _costMatrix = costMatrix;
             _supplies = supplies;
@@ -22,9 +22,9 @@ namespace Lab04_OR.Methods
         }
 
         // Method to solve the transportation problem using Least Cost Cell method
-        public int Solve()
+        public decimal Solve()
         {
-            int totalCost = 0;
+            decimal totalCost = 0;
 
             // Copy of supplies and demands to keep track of remaining
             int[] suppliesRemaining = (int[])_supplies.Clone();
@@ -53,7 +53,7 @@ namespace Lab04_OR.Methods
         }
 
         // Method to return the cost matrix (useful for inspection or testing)
-        public int[,] GetCostMatrix()
+        public decimal[,] GetCostMatrix()
         {
             return _costMatrix;
         }
@@ -65,7 +65,7 @@ namespace Lab04_OR.Methods
         // Helper method to find the least cost cell from the remaining supplies and demands
         private (int, int) FindLeastCostCell(int[] suppliesRemaining, int[] demandsRemaining)
         {
-            int minCost = int.MaxValue;
+            decimal minCost = decimal.MaxValue;
             int minRow = -1;
             int minCol = -1;
 
