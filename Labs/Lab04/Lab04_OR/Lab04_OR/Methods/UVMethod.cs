@@ -45,8 +45,7 @@ namespace Lab04_OR.Methods
                 BalanceSystem();
             }
 
-            //CheckAndResolveDegeneracy();
-            _allocation[2, 3] = 0;
+            CheckAndResolveDegeneracy();
 
             bool optimalSolutionFound = false;
 
@@ -275,9 +274,7 @@ namespace Lab04_OR.Methods
         {
             int m = _allocation.GetLength(0);
             int n = _allocation.GetLength(1);
-
             int requiredAllocations = m + n - 1;
-
             int currentAllocations = 0;
             for (int i = 0; i < m; i++)
             {
@@ -289,34 +286,43 @@ namespace Lab04_OR.Methods
                     }
                 }
             }
-
             if (currentAllocations < requiredAllocations)
             {
                 ResolveDegeneracy(currentAllocations, requiredAllocations);
             }
         }
-
         private void ResolveDegeneracy(int currentAllocations, int requiredAllocations)
         {
             int m = _allocation.GetLength(0);
             int n = _allocation.GetLength(1);
-
-            for (int i = 0; i < m; i++)
+            Dictionary<int, List<int>> keyCells = new Dictionary<int, List<int>>();
+            for (int i = 0; i < n; i++)
             {
-                for (int j = 0; j < n; j++)
+                keyCells.Add(i, new List<int>());
+                for (int j = 0; j < m; j++)
                 {
-                    if (_allocation[i, j] == EMPTY_CELL && !IsForbidden(i, j))
+                    if (_allocation[j, i] != EMPTY_CELL)
                     {
-                        _allocation[i, j] = 0; // Add dummy allocation
-
-                        currentAllocations++;
-
-                        if (currentAllocations == requiredAllocations)
-                        {
-                            return;
-                        }
+                        keyCells[i].Add(j);
                     }
                 }
+            }
+            var fulfilledRows = keyCells
+                .Where(x => x.Value.Count >= 2)
+                .SelectMany(x => x.Value)
+                .Distinct()
+                .ToList();
+            var lonelyCells = keyCells
+                .Where(x => x.Value.Count < 2 && !fulfilledRows
+                    .Contains(x.Value.FirstOrDefault()))
+                .Select(x => x.Key)
+                .ToList();
+            foreach (var lonelyCell in lonelyCells)
+            {
+                _allocation[fulfilledRows.FirstOrDefault(), lonelyCell] = 0;
+                currentAllocations++;
+                if (currentAllocations == requiredAllocations)
+                    break;
             }
         }
 
