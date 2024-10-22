@@ -1,8 +1,10 @@
-﻿using System.Text.RegularExpressions;
+﻿using System.Globalization;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using Lab04_OR.Methods;
 using System.Linq;
+using System.Windows.Media;
 
 namespace Lab04_OR;
 
@@ -213,11 +215,80 @@ public partial class MainWindow : Window
         }
 
         // Solve using UV method
-        var uvMethod = new UVMethod(costMatrix, supplies, demands);
+        var uvMethod = new UVMethod(this, costMatrix, supplies, demands);
         decimal result = uvMethod.Solve();
 
         // Display result (total cost)
         MessageBox.Show($"Total Transportation Cost: {result}", "Result");
+    }
+
+    public void ShowMatrixUV(int[,] allocationMatrix, decimal[,] deltaMatrix, decimal[] u, decimal[] v)
+    {
+        Grid dynamicGrid = new Grid
+        {
+            Margin = new Thickness(10),
+            ShowGridLines = true // Optional: Show grid lines
+        };
+
+        int rows = allocationMatrix.GetLength(0) + 1;
+        int cols = allocationMatrix.GetLength(1) + 1;
+
+        for (int i = 0; i < rows; i++)
+        {
+            dynamicGrid.RowDefinitions.Add(new RowDefinition());
+        }
+
+        for (int i = 0; i < cols; i++)
+        {
+            dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition());
+        }
+        
+        CreateCell(dynamicGrid, 0, 0, @"U\V");
+
+        for (int i = 0; i < rows - 1; i++)
+        {
+            CreateCell(dynamicGrid, i + 1, 0, u[i].ToString());
+        }
+
+        for (int i = 0; i < cols - 1; i++)
+        {
+            CreateCell(dynamicGrid, 0, i + 1, v[i].ToString());
+        }
+
+        for (int i = 0; i < rows - 1; i++)
+        {
+            for (int j = 0; j < cols - 1; j++)
+            {
+                if (allocationMatrix[i, j] == -1)
+                {
+                    CreateCell(dynamicGrid, i + 1, j + 1, deltaMatrix[i, j].ToString(), Brushes.Aqua);
+                }
+                else
+                {
+                    CreateCell(dynamicGrid, i + 1, j + 1, allocationMatrix[i, j].ToString(), Brushes.Lime);
+                }
+            }
+        }
+        
+        DynamicGridContainer.Children.Add(dynamicGrid);
+    }
+
+    private void CreateCell(Grid dynamicGrid, int x, int y, string text,  Brush? color = null)
+    {
+        TextBox textBox = new TextBox()
+        {
+            Text = text,
+            Width = 60,
+            Height = 30,
+            Margin = new Thickness(5),
+            Background = color ?? Brushes.White,
+            IsReadOnly = true // Make the TextBox read-only to prevent editing
+        };
+
+        dynamicGrid.Children.Add(textBox);
+
+        Grid.SetRow(textBox, x);
+        Grid.SetColumn(textBox, y);
     }
 
     private void PreDefine()

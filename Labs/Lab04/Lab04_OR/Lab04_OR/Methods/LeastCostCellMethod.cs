@@ -77,7 +77,7 @@ namespace Lab04_OR.Methods
                     {
                         if (demandsRemaining[j] > 0) // Only consider columns with remaining demands
                         {
-                            if (_costMatrix[i, j] < minCost)
+                            if (_costMatrix[i, j] <= minCost)
                             {
                                 minCost = _costMatrix[i, j];
                                 minRow = i;

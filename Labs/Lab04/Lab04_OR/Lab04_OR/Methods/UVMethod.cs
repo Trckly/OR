@@ -3,7 +3,9 @@ namespace Lab04_OR.Methods
 {
     public class UVMethod
     {
+        private MainWindow _mainWindow;
         private decimal[,] _costMatrix;
+        private decimal[,] _deltaMatrix;
         private int[,] _allocation;
         private int[] _supplies;
         private int[] _demands;
@@ -12,11 +14,13 @@ namespace Lab04_OR.Methods
 
         private const int EMPTY_CELL = -1; // Sentinel value for empty cells
 
-        public UVMethod(decimal[,] costMatrix, int[] supplies, int[] demands)
+        public UVMethod(MainWindow mainWindow, decimal[,] costMatrix, int[] supplies, int[] demands)
         {
+            _mainWindow = mainWindow;
             _costMatrix = costMatrix;
             _supplies = supplies;
             _demands = demands;
+            _deltaMatrix = new decimal[_costMatrix.GetLength(0), _costMatrix.GetLength(1)];
 
             _u = new decimal[supplies.Length];
             _v = new decimal[demands.Length];
@@ -55,6 +59,7 @@ namespace Lab04_OR.Methods
 
                 var (row, col, maxOpCost) = FindEnteringVariable();
 
+                _mainWindow.ShowMatrixUV(_allocation, _deltaMatrix, _u, _v);
                 if (maxOpCost >= 0)
                 {
                     optimalSolutionFound = true;
@@ -85,7 +90,7 @@ namespace Lab04_OR.Methods
                     numOfValuesInRow += _allocation[i, j] != EMPTY_CELL ? 1 : 0;
                 }
 
-                if (numOfValuesInRow >= maxValues)
+                if (numOfValuesInRow > maxValues)
                 {
                     maxValues = numOfValuesInRow;
                     rowWithMaxValues = i;
@@ -131,6 +136,7 @@ namespace Lab04_OR.Methods
                     if (_allocation[i, j] == EMPTY_CELL) // Non-basic variable
                     {
                         decimal opCost = _costMatrix[i, j] - (_u[i] + _v[j]);
+                        _deltaMatrix[i, j] = opCost;
                         if (opCost < minOpCost)
                         {
                             minOpCost = opCost;
