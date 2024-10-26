@@ -50,7 +50,7 @@ public class DualSimplex : Method
         this._constraints = new decimal[constraints.GetLength(0), constraints.GetLength(0) + objectiveFunction.Length];
         for (int i = 0; i < constraints.GetLength(0); i++)
         {
-            for (int j = 0; j < constraints.GetLength(0); j++)
+            for (int j = 0; j < constraints.GetLength(1); j++)
             {
                 _constraints[i, j] = constraints[i, j];
             }
@@ -58,7 +58,7 @@ public class DualSimplex : Method
 
         for (int i = 0; i < constraints.GetLength(0); i++)
         {
-            _constraints[i, constraints.GetLength(0) + i] = 1;
+            _constraints[i, constraints.GetLength(1) + i] = 1;
         }
 
         this._delta = new decimal[results.Length + objectiveFunction.Length];

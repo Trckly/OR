@@ -360,18 +360,21 @@ namespace Lab01_OR
 
         private void PreDefine()
         {
-            decimal[] myObjectiveFunction = new[] { 1M, 1 };
+            decimal[] myObjectiveFunction = new[] { 12M, 5, 15, 10 };
             decimal[,] myConstraints = new [,]
             {
-                {2M, 1},
-                {1, 2},
+                {5M, 1, 9, 12},
+                {2, 3, 4, 1},
+                {3, 2, 5, 10},
+                {1, 0, 0, 0},
+                {0, 1, 0, 0},
             };
-            decimal[] myResults = new[] { 5M, 5 };
-            string[] myInequalities = new[] { "<=", "<="};
+            decimal[] myResults = new[] { 1500M, 1000, 800, 40, 130 };
+            string[] myInequalities = new[] { "<=", "<=", "<=", "<=", "<="};
             
-            MethodBox.SelectedValue = "CuttingPlane";
-            NumberOfConstraints.SelectedValue = "2";
-            NumberOfVariables.SelectedValue = "2";
+            MethodBox.SelectedValue = "DualSimplex";
+            NumberOfConstraints.SelectedValue = "5";
+            NumberOfVariables.SelectedValue = "4";
 
             for (int i = 0; i < numberOfVariables; i++)
             {

@@ -29,7 +29,7 @@ public class Simplex : Method
         this._constraints = new decimal[constraints.GetLength(0), constraints.GetLength(0) + objectiveFunction.Length];
         for (int i = 0; i < constraints.GetLength(0); i++)
         {
-            for (int j = 0; j < constraints.GetLength(0); j++)
+            for (int j = 0; j < constraints.GetLength(1); j++)
             {
                 _constraints[i, j] = constraints[i, j];
             }
@@ -37,7 +37,7 @@ public class Simplex : Method
 
         for (int i = 0; i < constraints.GetLength(0); i++)
         {
-            _constraints[i, constraints.GetLength(0) + i] = 1;
+            _constraints[i, constraints.GetLength(1) + i] = 1;
         }
 
         this._delta = new decimal[results.Length + objectiveFunction.Length];
@@ -70,7 +70,7 @@ public class Simplex : Method
                 result[i] = _plan.GetValueOrDefault(i);
             }
 
-            for (int i = 0; i < _base.Length; i++)
+            for (int i = 0; i < _objectiveFunction.Length; i++)
             {
                 result[result.Length - 1] += result[i] * _objectiveFunction[i];
             }
@@ -91,7 +91,10 @@ public class Simplex : Method
 
         for (int i = 0; i < _deriv.Length; i++)
         {
-            _deriv[i] = _plan.GetValueOrDefault(_base[i]) / _constraints[i, minIndexColumn];
+            if (_constraints[i, minIndexColumn] != 0)
+                _deriv[i] = _plan.GetValueOrDefault(_base[i]) / _constraints[i, minIndexColumn];
+            else
+                _deriv[i] = 0;
         }
 
         min = decimal.MaxValue;
