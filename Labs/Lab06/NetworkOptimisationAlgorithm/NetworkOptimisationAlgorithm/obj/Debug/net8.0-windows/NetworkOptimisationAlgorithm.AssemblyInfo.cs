@@ -10,12 +10,12 @@
 using System;
 using System.Reflection;
 
-[assembly: System.Reflection.AssemblyCompanyAttribute("Lab04_OR")]
+[assembly: System.Reflection.AssemblyCompanyAttribute("NetworkOptimisationAlgorithm")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0d74163246a7f930074a6e0fc6a6249302f35629")]
-[assembly: System.Reflection.AssemblyProductAttribute("Lab04_OR")]
-[assembly: System.Reflection.AssemblyTitleAttribute("Lab04_OR")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0232f2c51f8eaa69ed501615faf4d2b4cfc0ba8a")]
+[assembly: System.Reflection.AssemblyProductAttribute("NetworkOptimisationAlgorithm")]
+[assembly: System.Reflection.AssemblyTitleAttribute("NetworkOptimisationAlgorithm")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
 [assembly: System.Runtime.Versioning.TargetPlatformAttribute("Windows7.0")]
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("Windows7.0")]
