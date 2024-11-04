@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GomoryHuCalculator")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e0804715ceda0d6e140abd0bb3abd37b913e9423")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+6a4e3d7c7690c6e9ae0556476af1dc6790225e9a")]
 [assembly: System.Reflection.AssemblyProductAttribute("GomoryHuCalculator")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GomoryHuCalculator")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

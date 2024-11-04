@@ -42,7 +42,7 @@ public class GomoryHuMethod
         int prevVertex = -1;
         while(_initialVertices.Count > 0)
         {
-            if (_initialVertices.Count == 1)
+            if (_initialVertices.Count == 1 && _graph.Count == 1)
             {
                 _graph.Add([_initialVertices.Last()]);
                 _initialVertices.Remove(_initialVertices.Last());
