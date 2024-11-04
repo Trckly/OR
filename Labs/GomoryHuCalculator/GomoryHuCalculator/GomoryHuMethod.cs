@@ -48,6 +48,20 @@ public class GomoryHuMethod
             double stCut = TryToPlace(nextVertex, nextVertexSTCut);
             prevVertex = nextVertex;
 
+            Console.WriteLine($"Iteration: {_nodesCount - _initialVertices.Count}");
+            foreach (var list in _graph)
+            {
+                Console.Write("{");
+                foreach (var vertex in list)
+                {
+                    Console.Write(Convert.ToChar('A' + vertex) + ", ");
+                }
+                Console.Write("}");
+                Console.WriteLine();
+            }
+
+            Console.WriteLine();
+
         }
 
         foreach (var list in _graph)
@@ -60,10 +74,15 @@ public class GomoryHuMethod
 
     private void SetSolutionMatrix(List<int> blackList)
     {
+        string resultingString;
+        
         (int vertex, double cut) = FindMinimalSTCutVertex(blackList);
         
         blackList.Remove(vertex);
         List<int> trackedVertices = [vertex];
+        
+        resultingString = $"{Convert.ToChar('A' + vertex)} - {cut}";
+        Console.WriteLine($"{resultingString}");
         
         InsertValuesInMatrix(vertex, cut, trackedVertices);
 
@@ -75,10 +94,12 @@ public class GomoryHuMethod
             cut = FindSTCut(trackedVertices);
             
             InsertValuesInMatrix(vertex, cut, trackedVertices);
+
+            resultingString += $" - {Convert.ToChar('A' + vertex)} - {cut}";
+            Console.WriteLine(resultingString);
         }
-        
-        
-        
+
+        Console.WriteLine();
     }
 
     private int FindConnectedVertex(int lastVertex, List<int> blackList)

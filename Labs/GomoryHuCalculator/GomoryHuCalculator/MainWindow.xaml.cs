@@ -28,7 +28,7 @@ public partial class MainWindow : Window
 
     public MainWindow()
     {
-        NodeCount = 6;
+        NodeCount = 7;
         
         InitializeComponent();
         GenerateTransportGrid();
@@ -98,15 +98,15 @@ public partial class MainWindow : Window
     
     private void PreDefineGraph()
     {
-        double [,]weightMatrix =
-        {
-            { 0,  1,  7, -1, -1, -1},
-            { 1,  0,  1,  3,  2, -1},
-            { 7,  1,  0, -1,  4, -1},
-            {-1,  3, -1,  0,  1,  6},
-            {-1,  2,  4,  1,  0,  2},
-            {-1, -1, -1,  6,  2,  0},
-        };
+        // double [,]weightMatrix =
+        // {
+        //     { 0,  1,  7, -1, -1, -1},
+        //     { 1,  0,  1,  3,  2, -1},
+        //     { 7,  1,  0, -1,  4, -1},
+        //     {-1,  3, -1,  0,  1,  6},
+        //     {-1,  2,  4,  1,  0,  2},
+        //     {-1, -1, -1,  6,  2,  0},
+        // };
         
         // double [,]weightMatrix =
         // {
@@ -119,16 +119,16 @@ public partial class MainWindow : Window
         //     {-1, -1, -1,  8,  2, 11,  0}
         // };
         
-        // double [,]weightMatrix =
-        // {
-        //     { 0,  5, -1,  5,  3,  8, -1},
-        //     { 5,  0, -1, -1,  9, -1, -1},
-        //     {-1, -1,  0,  6,  2, -1,  6},
-        //     { 5, -1,  6,  0, -1,  7,  6},
-        //     { 3,  9,  2, -1,  0,  4, -1},
-        //     { 8, -1, -1,  7,  4,  0, -1},
-        //     {-1, -1,  6,  6, -1, -1,  0}
-        // };
+        double [,]weightMatrix =
+        {
+            { 0,  5, -1,  5,  3,  8, -1},
+            { 5,  0, -1, -1,  9, -1, -1},
+            {-1, -1,  0,  6,  2, -1,  6},
+            { 5, -1,  6,  0, -1,  7,  6},
+            { 3,  9,  2, -1,  0,  4, -1},
+            { 8, -1, -1,  7,  4,  0, -1},
+            {-1, -1,  6,  6, -1, -1,  0}
+        };
         
         for (var i = 1; i <= NodeCount; i++)
         {
@@ -174,8 +174,62 @@ public partial class MainWindow : Window
 
         var gomoryHu = new GomoryHuMethod(weightMatrix);
 
-        gomoryHu.Solve();
+        var solutionMatrix = gomoryHu.Solve();
+        
+        ShowMatrix(solutionMatrix);
+        
+    }
 
+    public void ShowMatrix(double[,] solutionMatrix)
+    {
+        Grid dynamicGrid = new Grid
+        {
+            Margin = new Thickness(10),
+            ShowGridLines = true // Optional: Show grid lines
+        };
+
+        for (int i = 0; i <= NodeCount; i++)
+        {
+            dynamicGrid.RowDefinitions.Add(new RowDefinition());
+            dynamicGrid.ColumnDefinitions.Add(new ColumnDefinition());
+        }
+        
+        CreateCell(dynamicGrid, 0, 0, " ");
+        
+        for (int i = 0; i < NodeCount; i++)
+        {
+            CreateCell(dynamicGrid, 0, i + 1, Convert.ToChar('A' + i).ToString());
+            CreateCell(dynamicGrid, i + 1, 0, Convert.ToChar('A' + i).ToString());
+        }
+
+        for (int i = 0; i < NodeCount; i++)
+        {
+            for (int j = 0; j < NodeCount; j++)
+            {
+                CreateCell(dynamicGrid, i + 1, j + 1, solutionMatrix[i, j].ToString());
+            }
+        }
+        
+        DynamicGridContainer.Children.Add(dynamicGrid);
+    }
+
+
+    private void CreateCell(Grid dynamicGrid, int x, int y, string text,  Brush? color = null)
+    {
+        TextBox textBox = new TextBox()
+        {
+            Text = text,
+            Width = 60,
+            Height = 30,
+            Margin = new Thickness(5),
+            Background = color ?? Brushes.White,
+            IsReadOnly = true // Make the TextBox read-only to prevent editing
+        };
+
+        dynamicGrid.Children.Add(textBox);
+
+        Grid.SetRow(textBox, x);
+        Grid.SetColumn(textBox, y);
     }
 
     private void MinusButton_OnClick(object sender, RoutedEventArgs e)
