@@ -98,6 +98,7 @@ public partial class MainWindow : Window
     
     private void PreDefineGraph()
     {
+        // Wikipedia
         // double [,]weightMatrix =
         // {
         //     { 0,  1,  7, -1, -1, -1},
@@ -108,6 +109,18 @@ public partial class MainWindow : Window
         //     {-1, -1, -1,  6,  2,  0},
         // };
         
+        // GeekForGeeks
+        // double [,]weightMatrix =
+        // {
+        //     { 0, 10, -1, -1, -1,  8},
+        //     {10,  0,  4, -1,  2,  3},
+        //     {-1,  4,  0,  5,  4,  2},
+        //     {-1, -1,  5,  0,  7,  2},
+        //     {-1,  2,  4,  7,  0,  3},
+        //     { 8,  3,  2,  2,  3,  0},
+        // };
+        
+        // DO example
         // double [,]weightMatrix =
         // {
         //     { 0,  8,  9,  7, -1, -1, -1},
@@ -119,6 +132,7 @@ public partial class MainWindow : Window
         //     {-1, -1, -1,  8,  2, 11,  0}
         // };
         
+        // My
         double [,]weightMatrix =
         {
             { 0,  5, -1,  5,  3,  8, -1},
@@ -129,6 +143,19 @@ public partial class MainWindow : Window
             { 8, -1, -1,  7,  4,  0, -1},
             {-1, -1,  6,  6, -1, -1,  0}
         };
+        
+        // Danik
+        // int [,]weightMatrix =
+        // {
+        //     { 0,  2,  8, -1,  1,  4, -1, -1},
+        //     { 2,  0, -1, -1,  4,  7, -1, -1},
+        //     { 8, -1,  0,  7, -1, -1, -1, -1},
+        //     {-1, -1,  7,  0, -1, -1,  6, -1},
+        //     { 1,  4, -1, -1,  0, -1, -1,  3},
+        //     { 4,  7, -1, -1, -1,  0, -1,  4},
+        //     {-1, -1, -1,  6, -1, -1,  0,  6},
+        //     {-1, -1, -1, -1,  3,  4,  6,  0}
+        // };
         
         for (var i = 1; i <= NodeCount; i++)
         {

@@ -40,13 +40,21 @@ public class GomoryHuMethod
         }
 
         int prevVertex = -1;
-        while(_initialVertices.Count > 1)
+        while(_initialVertices.Count > 0)
         {
-            int nextVertex = FindNextVertex(prevVertex);
-            double nextVertexSTCut = FindSTCut([nextVertex]);
+            if (_initialVertices.Count == 1)
+            {
+                _graph.Add([_initialVertices.Last()]);
+                _initialVertices.Remove(_initialVertices.Last());
+            }
+            else
+            {
+                int nextVertex = FindNextVertex(prevVertex);
+                double nextVertexSTCut = FindSTCut([nextVertex]);
 
-            double stCut = TryToPlace(nextVertex, nextVertexSTCut);
-            prevVertex = nextVertex;
+                double stCut = TryToPlace(nextVertex, nextVertexSTCut);
+                prevVertex = nextVertex;
+            }
 
             Console.WriteLine($"Iteration: {_nodesCount - _initialVertices.Count}");
             foreach (var list in _graph)
