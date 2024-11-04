@@ -39,12 +39,14 @@ public class GomoryHuMethod
             return _solutionGraphMatrix;
         }
 
+        int prevVertex = -1;
         while(_initialVertices.Count > 1)
         {
-            int nextVertex = FindNextVertex();
+            int nextVertex = FindNextVertex(prevVertex);
             double nextVertexSTCut = FindSTCut([nextVertex]);
 
             double stCut = TryToPlace(nextVertex, nextVertexSTCut);
+            prevVertex = nextVertex;
 
         }
 
@@ -53,9 +55,7 @@ public class GomoryHuMethod
             SetSolutionMatrix(list);
         }
         
-        
-
-        return Solve();
+        return _solutionGraphMatrix;
     }
 
     private void SetSolutionMatrix(List<int> blackList)
@@ -144,7 +144,7 @@ public class GomoryHuMethod
                     checkList[^1] = nextVertex;
                     
                     var cut = FindSTCut(checkList.ToList());
-                    if (currentSTCut > cut)
+                    if (currentSTCut > cut || (list.Any(v => FindSTCut([v]) > cut) && FindSTCut(list) > cut ))
                     {
                         currentList = list;
                         currentSTCut = cut;
@@ -163,18 +163,29 @@ public class GomoryHuMethod
         return currentSTCut;
     }
 
-    private int FindNextVertex()
+    private int FindNextVertex(int prevVertex)
     {
         double maxEdgeWeight = 0;
         int vertexWithMaxEdge = 0;
         foreach (var vertex in _initialVertices)
         {
-            for (int i = 0; i < _nodesCount; ++i)
+            if (prevVertex != -1)
             {
-                if (_initialGraphMatrix[vertex, i] >= maxEdgeWeight)
+                if (_initialGraphMatrix[vertex, prevVertex] >= maxEdgeWeight)
                 {
-                    maxEdgeWeight = _initialGraphMatrix[vertex, i];
+                    maxEdgeWeight = _initialGraphMatrix[vertex, prevVertex];
                     vertexWithMaxEdge = vertex;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < _nodesCount; ++i)
+                {
+                    if (_initialGraphMatrix[vertex, i] >= maxEdgeWeight)
+                    {
+                        maxEdgeWeight = _initialGraphMatrix[vertex, i];
+                        vertexWithMaxEdge = vertex;
+                    }
                 }
             }
         }
