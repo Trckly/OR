@@ -1,0 +1,41 @@
+﻿<Window x:Class="GomoryHuCalculator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Gomory-Hu Algorithm" Height="630" Width="1000"
+        Background="#ddbbff">
+    <ScrollViewer>
+        <TabControl>
+            <TabItem Header="Input">
+                <DockPanel VerticalAlignment="Top" HorizontalAlignment="Center" Margin="10">
+                    <!-- ComboBox for selecting number of suppliers -->
+                    <StackPanel Orientation="Vertical" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="10" DockPanel.Dock="Top">
+                        <TextBlock Text="Number of nodes:" VerticalAlignment="Center" Margin="5, 0" Foreground="#661199"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <Button Content="+" Width="20" Margin="5, 0" Click="PlusButton_OnClick" Background="#ddaaff" BorderBrush="#661199" Foreground="#661199"/>
+                            <Button Content="-" Width="20" Margin="5, 0" Click="MinusButton_OnClick" Background="#ddaaff" BorderBrush="#661199" Foreground="#661199"/>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Grid where the matrix will be displayed -->
+                    <Grid Name="TransportGrid" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" DockPanel.Dock="Top" Width="750" Height="450" />
+                
+                    <StackPanel HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0, 10">
+                        <Button Content="Solve" Click="SolveButton_OnClick" Width="300pt" Background="#ddaaff" BorderBrush="#661199" Foreground="#661199"/>
+                    </StackPanel>
+                </DockPanel>
+            </TabItem>
+            <TabItem Header="Steps">
+                <StackPanel Name="IterationsPanel" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0, 4, 0, 0" >
+                </StackPanel>
+            </TabItem>
+            <TabItem Header="Tree">
+                    <StackPanel Name="TreePanel" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0, 4, 0, 0" >
+                    </StackPanel>
+            </TabItem>
+            <TabItem Header="Matrix">
+                    <StackPanel Name="DynamicGridContainer" HorizontalAlignment="Center" VerticalAlignment="Top" DockPanel.Dock="Top" Margin="0,20,0,0">
+                    </StackPanel>
+            </TabItem>
+        </TabControl>
+    </ScrollViewer>
+</Window>
