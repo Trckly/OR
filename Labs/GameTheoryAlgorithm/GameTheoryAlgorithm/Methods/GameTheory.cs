@@ -101,6 +101,17 @@ public class GameTheory
         }
 
         _gameMatrix = newGameMatrix;
+
+        Console.WriteLine("Matrix with reduced rows:");
+        for (int i = 0; i < _gameMatrix.GetLength(0); i++)
+        {
+            for (int j = 0; j < _gameMatrix.GetLength(1); j++)
+            {
+                Console.Write(_gameMatrix[i, j] + ", ");
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine();
     }
 
     private void ReduceBStrategies()
@@ -144,6 +155,17 @@ public class GameTheory
         }
         
         _gameMatrix = newGameMatrix;
+
+        Console.WriteLine("Matrix with reduced columns:");
+        for (int i = 0; i < _gameMatrix.GetLength(0); i++)
+        {
+            for (int j = 0; j < _gameMatrix.GetLength(1); j++)
+            {
+                Console.Write(_gameMatrix[i, j] + ", ");
+            }
+            Console.WriteLine();
+        }
+        Console.WriteLine();
     }
 
     private (int, decimal) GetMinInRows()
