@@ -1,4 +1,7 @@
-﻿using Lab01_OR;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
+using Lab01_OR;
 
 namespace GameTheoryAlgorithm.Methods;
 
@@ -107,16 +110,7 @@ public class GameTheory
 
         _gameMatrix = newGameMatrix;
 
-        Console.WriteLine("Matrix with reduced rows:");
-        for (int i = 0; i < _gameMatrix.GetLength(0); i++)
-        {
-            for (int j = 0; j < _gameMatrix.GetLength(1); j++)
-            {
-                Console.Write(_gameMatrix[i, j] + ", ");
-            }
-            Console.WriteLine();
-        }
-        Console.WriteLine();
+        ShowMatrixReduction();
         
         return true;
     }
@@ -165,16 +159,7 @@ public class GameTheory
         
         _gameMatrix = newGameMatrix;
 
-        Console.WriteLine("Matrix with reduced columns:");
-        for (int i = 0; i < _gameMatrix.GetLength(0); i++)
-        {
-            for (int j = 0; j < _gameMatrix.GetLength(1); j++)
-            {
-                Console.Write(_gameMatrix[i, j] + ", ");
-            }
-            Console.WriteLine();
-        }
-        Console.WriteLine();
+        ShowMatrixReduction();
 
         return true;
     }
@@ -227,6 +212,35 @@ public class GameTheory
         }
         
         return (minMaxIndexInColumns, minElement);
+    }
+
+    private void ShowMatrixReduction()
+    {
+        UiWriteLine("Matrix with reduced columns:");
+        for (var i = 0; i < _gameMatrix.GetLength(0); i++)
+        {
+            List<decimal> matrixRow = [];
+            for (var j = 0; j < _gameMatrix.GetLength(1); j++)
+            {
+                matrixRow.Add(_gameMatrix[i, j]);
+            }
+            UiWriteLine(string.Join(", ", matrixRow));
+        }
+        UiWriteLine("");
+    }
+
+    private void UiWriteLine(string text)
+    {
+        var textLine = new TextBlock
+        {
+            Text = text,
+            FontWeight = FontWeights.Bold,
+            Foreground = new SolidColorBrush(Color.FromRgb(102, 17, 153)),
+            FontSize = 16,
+            FontFamily = new FontFamily("Courier New"),
+            Margin = text.Length == 0 ? new Thickness(0, 0, 0, 20) : new Thickness(0),
+        };
         
+        _mainWindow.MatrixCutPanel.Children.Add(textLine);
     }
 }

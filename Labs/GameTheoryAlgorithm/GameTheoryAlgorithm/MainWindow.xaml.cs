@@ -58,11 +58,15 @@ public partial class MainWindow : Window
         // Create headers (top row and left column)
         for (int i = 1; i <= _a; i++)
         {
-            TextBlock supplierHeader = new TextBlock
+            var supplierHeader = new TextBox
             {
                 Text = "A" + i,
                 VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Foreground = new SolidColorBrush(Color.FromRgb(102, 17, 153)),
+                FontWeight = FontWeights.Bold,
+                BorderThickness = new Thickness(0),
+                Background = Brushes.LightGray
             };
             Grid.SetRow(supplierHeader, i);
             Grid.SetColumn(supplierHeader, 0);
@@ -71,11 +75,15 @@ public partial class MainWindow : Window
 
         for (int j = 1; j <= _b; j++)
         {
-            TextBlock consumerHeader = new TextBlock
+            var consumerHeader = new TextBox
             {
                 Text = "B" + j,
                 VerticalAlignment = VerticalAlignment.Center,
-                HorizontalAlignment = HorizontalAlignment.Center
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Foreground = new SolidColorBrush(Color.FromRgb(102, 17, 153)),
+                FontWeight = FontWeights.Bold,
+                BorderThickness = new Thickness(0),
+                Background = Brushes.LightGray
             };
             Grid.SetRow(consumerHeader, 0);
             Grid.SetColumn(consumerHeader, j);
@@ -93,6 +101,11 @@ public partial class MainWindow : Window
                     HorizontalAlignment = HorizontalAlignment.Center,
                     MinWidth = 30,
                     MinHeight = 30,
+                    TextAlignment = TextAlignment.Center,
+                    VerticalContentAlignment = VerticalAlignment.Center,
+                    Background = new SolidColorBrush(Color.FromRgb(221, 204, 255)),
+                    BorderThickness = new Thickness(2),
+                    BorderBrush = new SolidColorBrush(Color.FromRgb(102, 17, 153))
                 };
 
                 // Attach the validation event handler to each TextBox
@@ -146,8 +159,7 @@ public partial class MainWindow : Window
         // Create a new grid
         Grid dynamicGrid = new Grid
         {
-            Margin = new Thickness(10),
-            ShowGridLines = true // Optional: Show grid lines
+            Margin = new Thickness(10)
         };
 
         int rows = constraints.GetLength(0) + 2;
@@ -165,16 +177,16 @@ public partial class MainWindow : Window
         }
 
 
-        CreateCell(dynamicGrid, 0, 0, "Base");
-        CreateCell(dynamicGrid, 0, 1, "Cb");
-        CreateCell(dynamicGrid, 0, 2, "Plan");
+        CreateCell(dynamicGrid, 0, 0, "Base", true);
+        CreateCell(dynamicGrid, 0, 1, "Cb", true);
+        CreateCell(dynamicGrid, 0, 2, "Plan", true);
 
         for (int i = 3; i < constraints.GetLength(1) + 3; i++)
         {
-            CreateCell(dynamicGrid, 0, i, string.Format("x" + (i - 2)));
+            CreateCell(dynamicGrid, 0, i, string.Format("x" + (i - 2)), true);
         }
 
-        CreateCell(dynamicGrid, 0, cols - 1, "der");
+        CreateCell(dynamicGrid, 0, cols - 1, "der", true);
 
         for (int i = 1; i < deriv.Length + 1; i++)
         {
@@ -183,7 +195,7 @@ public partial class MainWindow : Window
 
         for (int i = 1; i < myBase.Length + 1; i++)
         {
-            CreateCell(dynamicGrid, i, 0, string.Format("x" + (myBase[i - 1] + 1)));
+            CreateCell(dynamicGrid, i, 0, string.Format("x" + (myBase[i - 1] + 1)), true);
         }
 
         for (int i = 1; i < myBase.Length + 1; i++)
@@ -205,7 +217,7 @@ public partial class MainWindow : Window
             }
         }
 
-        CreateCell(dynamicGrid, rows - 1, 0, "F*");
+        CreateCell(dynamicGrid, rows - 1, 0, "F*" , true);
         CreateCell(dynamicGrid, rows - 1, 1, "0");
         CreateCell(dynamicGrid, rows - 1, 2, "0");
 
@@ -220,15 +232,21 @@ public partial class MainWindow : Window
         DynamicGridContainer.Children.Add(dynamicGrid);
     }
 
-    private void CreateCell(Grid dynamicGrid, int x, int y, string text,  Brush? color = null)
+    private void CreateCell(Grid dynamicGrid, int x, int y, string text, bool isHeader = false,  Brush? color = null)
     {
         TextBox textBox = new TextBox()
         {
             Text = text,
-            Width = 60,
-            Height = 30,
+            Width = 40,
+            Height = 40,
             Margin = new Thickness(5),
-            Background = color ?? Brushes.White,
+            FontWeight = isHeader ? FontWeights.Bold : FontWeights.Normal,
+            Foreground = isHeader == true ? new SolidColorBrush(Color.FromRgb(102, 17, 153)) : Brushes.Black,
+            Background = isHeader == false ? new SolidColorBrush(Color.FromRgb(221, 204, 255)) : Brushes.LightGray,
+            BorderThickness = isHeader == false ? new Thickness(2) : new Thickness(0),
+            BorderBrush = new SolidColorBrush(Color.FromRgb(102, 17, 153)),
+            TextAlignment = TextAlignment.Center,
+            VerticalContentAlignment = VerticalAlignment.Center,
             IsReadOnly = true // Make the TextBox read-only to prevent editing
         };
 
@@ -240,6 +258,7 @@ public partial class MainWindow : Window
 
     private void PreDefine()
     {
+        // Test
         // decimal[,] gameMatrix = {
         //     {1M, 4, 6, 3, 7},
         //     { 3, 1, 2, 4, 3},
@@ -250,13 +269,29 @@ public partial class MainWindow : Window
         // AComboBox.SelectedValue = "4";
         // BComboBox.SelectedValue = "5";
         
-        decimal[,] gameMatrix = {
-            { 9M, 3, 1, 4, 3, 2 },
-            { 7, 0, 3, 2, 3, 1 },
-            { 4, 5, 2, 7, 3, 3 },
-            { 3, 6, 7, 5, 4, 2 },
-            { 4, 3, 5, 4, 2, 1 },
-            { 6, 5, 4, 5, 5, 6 }
+        //Andriy
+        // decimal[,] gameMatrix = {
+        //     { 9M, 3, 1, 4, 3, 2 },
+        //     { 7, 0, 3, 2, 3, 1 },
+        //     { 4, 5, 2, 7, 3, 3 },
+        //     { 3, 6, 7, 5, 4, 2 },
+        //     { 4, 3, 5, 4, 2, 1 },
+        //     { 6, 5, 4, 5, 5, 6 }
+        // };
+        //
+        // AComboBox.SelectedValue = "6";
+        // BComboBox.SelectedValue = "6";
+        
+        
+        // Danik
+        decimal[,] gameMatrix = 
+        {
+            { 4, 0, 3, 1, 1, 4 },
+            { 8, 9, 5, 1, 4, 8 },
+            { 1, 3, 4, 6, 8, 4 },
+            { 4, 4, 4, 6, 7, 5 },
+            { 9, 6, 3, 7, 7, 7 },
+            { 2, 6, 3, 5, 6, 3 }
         };
 
             

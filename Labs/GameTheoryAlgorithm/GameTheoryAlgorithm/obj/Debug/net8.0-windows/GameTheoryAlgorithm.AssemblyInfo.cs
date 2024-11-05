@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("GameTheoryAlgorithm")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+1286d4be6881e6be2710b816b5f76c0478da9666")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+730967130a8369b495b4315888e80808ef5111e4")]
 [assembly: System.Reflection.AssemblyProductAttribute("GameTheoryAlgorithm")]
 [assembly: System.Reflection.AssemblyTitleAttribute("GameTheoryAlgorithm")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

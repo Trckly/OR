@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "E:\\A_University\\A_term5\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\GameTheoryAlgorithm.csproj": {}
+    "C:\\Users\\Danatello\\Documents\\Subjects\\5th_semester\\OthersWork\\Danylo\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\GameTheoryAlgorithm.csproj": {}
   },
   "projects": {
-    "E:\\A_University\\A_term5\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\GameTheoryAlgorithm.csproj": {
+    "C:\\Users\\Danatello\\Documents\\Subjects\\5th_semester\\OthersWork\\Danylo\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\GameTheoryAlgorithm.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "E:\\A_University\\A_term5\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\GameTheoryAlgorithm.csproj",
+        "projectUniqueName": "C:\\Users\\Danatello\\Documents\\Subjects\\5th_semester\\OthersWork\\Danylo\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\GameTheoryAlgorithm.csproj",
         "projectName": "GameTheoryAlgorithm",
-        "projectPath": "E:\\A_University\\A_term5\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\GameTheoryAlgorithm.csproj",
-        "packagesPath": "C:\\Users\\Akmitliviy\\.nuget\\packages\\",
-        "outputPath": "E:\\A_University\\A_term5\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\obj\\",
+        "projectPath": "C:\\Users\\Danatello\\Documents\\Subjects\\5th_semester\\OthersWork\\Danylo\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\GameTheoryAlgorithm.csproj",
+        "packagesPath": "C:\\Users\\Danatello\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Danatello\\Documents\\Subjects\\5th_semester\\OthersWork\\Danylo\\OR\\Labs\\GameTheoryAlgorithm\\GameTheoryAlgorithm\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\Akmitliviy\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\Danatello\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
