@@ -22,8 +22,12 @@ public class GameTheory
             return ([aStrategy], [bStrategy], minInRows);
         }
 
-        ReduceBStrategies();
-        ReduceAStrategies();
+        do
+        {
+
+        } while (
+            ReduceBStrategies() &&
+            ReduceAStrategies());
         
         decimal[] objectiveFunction = new decimal[_gameMatrix.GetLength(1)];
         for (int i = 0; i < _gameMatrix.GetLength(1); i++)
@@ -59,7 +63,7 @@ public class GameTheory
         return (x, y, gamePrice);
     }
 
-    private void ReduceAStrategies()
+    private bool ReduceAStrategies()
     {
         var rowsToSave = new List<int>();
         for (int i = 0; i < _gameMatrix.GetLength(0); i++)
@@ -88,7 +92,8 @@ public class GameTheory
             }
         }
 
-
+        if (rowsToSave.Count == _gameMatrix.GetLength(0)) return false;
+        
         var newGameMatrix = new decimal[rowsToSave.Count, _gameMatrix.GetLength(1)];
         int realRow = 0;
         foreach (var nextRow in rowsToSave)
@@ -112,9 +117,11 @@ public class GameTheory
             Console.WriteLine();
         }
         Console.WriteLine();
+        
+        return true;
     }
 
-    private void ReduceBStrategies()
+    private bool ReduceBStrategies()
     {
         var columnsToSave = new List<int>();
         for (int i = 0; i < _gameMatrix.GetLength(1); i++)
@@ -143,6 +150,8 @@ public class GameTheory
             }
         }
 
+        if (columnsToSave.Count == _gameMatrix.GetLength(1)) return false;
+        
         var newGameMatrix = new decimal[_gameMatrix.GetLength(0), columnsToSave.Count];
         for (int i = 0; i < _gameMatrix.GetLength(0); i++)
         {
@@ -166,6 +175,8 @@ public class GameTheory
             Console.WriteLine();
         }
         Console.WriteLine();
+
+        return true;
     }
 
     private (int, decimal) GetMinInRows()
